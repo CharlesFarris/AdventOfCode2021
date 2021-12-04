@@ -121,9 +121,28 @@ function dayTwoPartOne() {
             depth += value;
         }
     });
-    console.info("Product:" + (horizontal * depth));
+    console.info("Product: " + (horizontal * depth));
 }
 
 function dayTwoPartTwo() {
+    let horizontal = 0;
+    let depth = 0;
+    let aim = 0;
+    commands.forEach(command => {
+        const tokens = command.split(" ");
+        const value = parseInt(tokens[1]);
+        if (tokens[0] == "forward") {
+            horizontal += value;
+            depth += (aim * value);
+        } else if (tokens[0] == "up") {
+            aim -= value;
+        } else if (tokens[0] == "down") {
+            aim += value;
+        }
+    });
+    console.info("Horizontal: " + horizontal);
+    console.info("Depth: " + depth);
+    console.info("Aim: " + aim);
+    console.info("Product: " + (horizontal * depth));
 
 }
