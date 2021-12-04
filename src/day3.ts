@@ -132,7 +132,7 @@ function dayThreePartOne() {
                 oneBits++;
             }
         });
-        let zeroBits = values.length - oneBits;
+        const zeroBits = values.length - oneBits;
         console.info("bit: " + bit + " oneBits: " + oneBits + " zeroBits: " + zeroBits);
         if (oneBits > zeroBits) {
             gammaString += "1";
@@ -150,5 +150,57 @@ function dayThreePartOne() {
 }
 
 function dayThreePartTwo() {
-
+    var oxygenRating = findRating(true);
+    console.info("O2 Rating: " + oxygenRating);
+    var carbonDioxideRating = findRating(false);
+    console.info("CO2 Rating: " + carbonDioxideRating);
+    console.info("Product: " + (oxygenRating * carbonDioxideRating));
 }
+
+function findRating(useMostCommon: boolean): number {
+    const bitCount = values[0].length;
+    let currentValues = values;
+    for (let bit = 0; bit < bitCount; bit++) {
+        console.info(currentValues);
+        if (currentValues.length == 1) {
+            break;
+        }
+        let newValues = [];
+        let oneBits = 0;
+        currentValues.forEach(value => {
+            if (value[bit] == "1") {
+                oneBits++;
+            }
+        });
+        const zeroBits = currentValues.length - oneBits;
+        console.info("bit: " + bit + " oneBits: " + oneBits + " zeroBits: " + zeroBits);
+        let selectedBit = "";
+        if (useMostCommon) {
+            if (oneBits > zeroBits) {
+                selectedBit = "1";
+            } else if (oneBits == zeroBits) {
+                selectedBit = "1";
+            }
+            else {
+                selectedBit = "0";
+            }
+        } else {
+            if (oneBits < zeroBits) {
+                selectedBit = "1";
+            } else if (oneBits == zeroBits) {
+                selectedBit = "0";
+            }
+            else {
+                selectedBit = "0";
+            }
+        }
+        currentValues.forEach(value => {
+            if (value[bit] == selectedBit) {
+                newValues.push(value);
+            }
+        });
+        currentValues = newValues;
+    }
+    return parseInt(currentValues[0], 2);
+}
+
