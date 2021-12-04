@@ -2,6 +2,7 @@
 
 export { dayOnePartOne, dayOnePartTwo };
 
+
 // Test Values
 //const measurements = [199, 200, 208, 210, 200, 207, 240, 269, 260, 263];
 
@@ -87,7 +88,7 @@ const measurements = [
     4743, 4718, 4714, 4715, 4697, 4699, 4698, 4696, 4703, 4702, 4704, 4709, 4726, 4725, 4743, 4747, 4765, 4766, 4768, 4764, 4768, 4770, 4777, 4778,
     4779, 4786, 4804, 4806, 4790, 4797, 4808, 4809, 4806, 4808, 4818, 4822, 4823, 4854, 4855, 4885, 4902, 4903, 4905, 4906, 4908, 4907, 4909, 4915,
     4916, 4906, 4935, 4949, 4948, 4952, 4964, 4960, 4962, 4975, 4976, 4987, 4996, 4994, 4996, 4997, 5000, 5001, 4986, 4988, 4999, 4997, 4998, 4997,
-    5004, 5005, 5006, 5004, 5005, 5018, 5019, 5021, 5022, 5028, 5057, 5058, 5063, 5067, 5068,
+    5004, 5005, 5006, 5004, 5005, 5018, 5019, 5021, 5022, 5028, 5057, 5058, 5063, 5067, 5068
 ];
 
 function dayOnePartOne() {
@@ -101,5 +102,16 @@ function dayOnePartOne() {
 }
 
 function dayOnePartTwo() {
-    console.info("part2");
+    let sums = [];
+    for (let index = 0; index < measurements.length - 2; index++) {
+        sums.push(measurements[index] + measurements[index + 1] + measurements[index + 2]);
+    }
+    let increased = 0;
+    for (let index = 1; index < sums.length; index++) {
+        if (sums[index] > sums[index-1])
+        {
+            increased++;
+        }        
+    }
+    console.info("Increased:" + increased);
 }
