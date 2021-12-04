@@ -1,4 +1,10 @@
 import { dayOnePartOne, dayOnePartTwo } from "./day1";
+import { dayTwoPartOne, dayTwoPartTwo } from "./day2";
 
-dayOnePartOne()
-dayOnePartTwo();
+// Day 1
+//dayOnePartOne()
+//dayOnePartTwo();
+
+// Day 2
+dayTwoPartOne();
+dayTwoPartTwo();
