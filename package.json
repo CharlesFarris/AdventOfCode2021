@@ -5,7 +5,7 @@
   "name": "adventofcode2021",
   "description": "",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app/index.js",
   "scripts": {
     "build": "tsc",
     "test": "tsc -v"

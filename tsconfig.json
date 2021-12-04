@@ -1,8 +1,6 @@
 {
     "compilerOptions": {
         "outDir": "app"
-        
-
     },
     "include": ["src/**/*"]
 }
