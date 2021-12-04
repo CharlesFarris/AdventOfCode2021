@@ -1,3 +1,4 @@
-const message = "test";
+import { dayOnePartOne, dayOnePartTwo } from "./day1";
 
-console.log(message);
+dayOnePartOne()
+dayOnePartTwo();
