@@ -8,7 +8,7 @@
   "main": "app/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "tsc -v"
+    "run": "node ./app/index.js"
   },
   "repository": {
     "type": "git",
