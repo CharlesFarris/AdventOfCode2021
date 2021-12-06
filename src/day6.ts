@@ -12,7 +12,6 @@ function daySixPartOne() {
     let fish = [...initialFish];
     const numberofDays = 80;
     for (let day = 0; day < numberofDays; day++) {
-        //console.log("Day: " + day + ": " + fish.join());
         let count = fish.length;
         for (let i = 0; i < count; i++) {
             let time = fish[i];
@@ -24,7 +23,6 @@ function daySixPartOne() {
             fish[i] = time;
         }
     }
-    //console.log("Day: " + numberofDays + ": " + fish.join());
     console.log("Count: " + fish.length);
 }
 
@@ -40,7 +38,6 @@ function daySixPartTwo() {
         fish[8] = fishAtZero;
         fish[6] += fishAtZero;
     }
-    //console.log("Day: " + numberofDays + ": " + fish.join());
     const count = fish.reduce((total: number, time: number) => { return total + time; }, 0);
     console.log("Count: " + count);
 }
