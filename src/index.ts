@@ -6,9 +6,10 @@ import { dayFourPartOne, dayFourPartTwo } from "./day4";
 import { dayFivePartOne, dayFivePartTwo } from "./day5";
 import { daySixPartOne, daySixPartTwo } from "./day6";
 import { daySevenPartOne, daySevenPartTwo } from "./day7";
+import { dayEightPartOne, dayEightPartTwo } from "./day8";
 */
 
-import { dayEightPartOne, dayEightPartTwo } from "./day8";
+import { dayNinePartOne, dayNinePartTwo } from "./day9";
 
 /*
 // Day 1
@@ -41,5 +42,9 @@ daySevenPartTwo();
 */
 
 // Day 8
-dayEightPartOne();
-dayEightPartTwo();
+//dayEightPartOne();
+//dayEightPartTwo();
+
+// Day 9
+dayNinePartOne();
+dayNinePartTwo();
