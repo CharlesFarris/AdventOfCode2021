@@ -1,0 +1,32 @@
+# https://prettier.io/docs/en/ignore.html
+
+# output and non-source directories/files
+/coverage/
+/dist/
+/node_modules/
+/*.local
+/.*cache
+/app/
+
+# prettier Markdown formatting is terrible + incompatible with markdownlint
+*.md
+
+# prettier HTML formatting is terrible
+*.html
+
+# ignore files with no Prettier parser
+.*ignore
+*.config
+*.gif
+*.handlebars
+*.ico
+*.jison
+*.jpg
+*.lock
+*.png
+*.props
+*.ps1
+*.svg
+*.txt
+*.xml
+*.xsd

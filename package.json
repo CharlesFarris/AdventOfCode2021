@@ -1,24 +1,57 @@
 {
-  "devDependencies": {
-    "typescript": "^4.5.2"
-  },
   "name": "adventofcode2021",
-  "description": "",
   "version": "1.0.0",
   "main": "app/index.js",
   "scripts": {
     "build": "tsc",
-    "run": "node ./app/index.js"
+    "execute": "node ./app/index.js",
+    "format": "prettier --list-different .",
+    "format-fix": "prettier --write ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SleepingBearSystems/AdventOfCode2021.git"
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-typescript": "^7.16.0",
+    "babel-jest": "^27.3.1",
+    "jest": "^27.3.1",
+    "prettier": "^2.4.1",
+    "typescript": "^4.5.2"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SleepingBearSystems/AdventOfCode2021/issues"
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-typescript"
+    ]
   },
-  "homepage": "https://github.com/SleepingBearSystems/AdventOfCode2021#readme"
+  "jest": {
+    "testEnvironment": "node",
+    "testResultsProcessor": "jest-teamcity",
+    "moduleNameMapper": {
+      "^(.+\\.css)$": "identity-obj-proxy",
+      "^(.+\\.svg)$": "<rootDir>/src/.jestMockImportedFile.js"
+    }
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "endOfLine": "auto",
+    "printWidth": 120,
+    "quoteProps": "preserve",
+    "tabWidth": 4,
+    "trailingComma": "none",
+    "overrides": [
+      {
+        "files": [
+          "*.json",
+          "*.jsonc",
+          "*.yml"
+        ],
+        "options": {
+          "tabWidth": 2
+        }
+      }
+    ]
+  },
+  "wallaby": {
+    "autoDetect": true
+  }
 }
