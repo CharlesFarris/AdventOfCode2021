@@ -1,6 +1,6 @@
 // AoC Day 9 Challenge
 
-import { numberLiteralTypeAnnotation } from "@babel/types";
+import { numberLiteralTypeAnnotation, throwStatement } from "@babel/types";
 
 /*
 // Test values
@@ -113,6 +113,17 @@ const inputs: string[] = [
 
 export { dayNinePartOne, dayNinePartTwo };
 
+class Point {
+    constructor(x: number, y: number, index: number) {
+        this.x = x;
+        this.y = y;
+        this.index = index;
+    }
+
+    readonly x: number;
+    readonly y: number;
+    readonly index: number;
+}
 class HeightMap {
     constructor(lines: string[]) {
         this.height = lines.length;
@@ -125,8 +136,16 @@ class HeightMap {
         }, []);
     }
 
+    getIndex(x: number, y: number): number {
+        return x + this.width * y;
+    }
+
     getValue(x: number, y: number): number {
-        return this.values[x + y * this.width];
+        return this.values[this.getIndex(x, y)];
+    }
+
+    getValueAtPoint(point: Point): number {
+        return this.getValue(point.x, point.y);
     }
 
     isValid(x: number, y: number): boolean {
@@ -163,6 +182,67 @@ class HeightMap {
         return risks;
     }
 
+    getLowPoints(): Point[] {
+        const points: Point[] = [];
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                if (this.isLowPoint(x, y)) {
+                    points.push(new Point(x, y, this.getIndex(x, y)));
+                }
+            }
+        }
+        return points;
+    }
+
+    getAdjacentPoints(point: Point): Point[] {
+        const adjacentPoints: Point[] = [];
+        if (this.isValid(point.x + 1, point.y)) {
+            adjacentPoints.push(new Point(point.x + 1, point.y, this.getIndex(point.x + 1, point.y)));
+        }
+        if (this.isValid(point.x - 1, point.y)) {
+            adjacentPoints.push(new Point(point.x - 1, point.y, this.getIndex(point.x - 1, point.y)));
+        }
+        if (this.isValid(point.x, point.y + 1)) {
+            adjacentPoints.push(new Point(point.x, point.y + 1, this.getIndex(point.x, point.y + 1)));
+        }
+        if (this.isValid(point.x, point.y - 1)) {
+            adjacentPoints.push(new Point(point.x, point.y - 1, this.getIndex(point.x, point.y - 1)));
+        }
+        return adjacentPoints;
+    }
+
+    readonly width: number;
+    readonly height: number;
+    readonly values: number[];
+}
+
+class BasinMap {
+    constructor(width: number, height: number) {
+        this.width = width;
+        this.height = height;
+        this.values = new Array(width * height).fill(9);
+    }
+
+    getIndex(x: number, y: number): number {
+        return x + this.width * y;
+    }
+
+    getValue(x: number, y: number): number {
+        return this.values[this.getIndex(x, y)];
+    }
+
+    setValue(x: number, y: number, value: number): void {
+        this.values[this.getIndex(x, y)] = value;
+    }
+
+    setValueAtPoint(point: Point, value: number): void {
+        this.setValue(point.x, point.y, value);
+    }
+
+    isValid(x: number, y: number): boolean {
+        return 0 <= x && x < this.width && 0 <= y && y < this.height;
+    }
+
     readonly width: number;
     readonly height: number;
     readonly values: number[];
@@ -178,4 +258,41 @@ function dayNinePartOne(): void {
     console.log("Sum: " + sum);
 }
 
-function dayNinePartTwo(): void {}
+function dayNinePartTwo(): void {
+    const heightMap = new HeightMap(inputs);
+    const lowPoints = heightMap.getLowPoints();
+    let sizes: number[] = [];
+    for (const lowPoint of lowPoints) {
+        const basinMap = new BasinMap(heightMap.width, heightMap.height);
+        const processed: number[] = [];
+        const stack: Point[] = [];
+        stack.push(lowPoint);
+        while (stack.length > 0) {
+            const currentPoint = stack.pop();
+            processed.push(currentPoint.index);
+            basinMap.setValueAtPoint(currentPoint, heightMap.values[currentPoint.index]);
+            const adjacentPoints: Point[] = heightMap.getAdjacentPoints(currentPoint);
+            for (const adjacentPoint of adjacentPoints) {
+                const adjacentValue: number = heightMap.getValueAtPoint(adjacentPoint);
+                if (
+                    processed.indexOf(adjacentPoint.index) === -1 &&
+                    adjacentValue < 9 &&
+                    adjacentValue > heightMap.getValueAtPoint(currentPoint)
+                ) {
+                    stack.push(adjacentPoint);
+                }
+            }
+            //console.log(stack);
+            //console.log(basinMap.values);
+        }
+        const size: number = basinMap.values.reduce((count, value) => {
+            return count + (value < 9 ? 1 : 0);
+        }, 0);
+        sizes.push(size);
+        console.log("Basin Size: " + size);
+    }
+    const sortedSizes: number[] = sizes.sort((a, b) => {
+        return b - a;
+    });
+    console.log("Product: " + sortedSizes[0] * sortedSizes[1] * sortedSizes[2]);
+}
