@@ -165,7 +165,7 @@ function isValidClosure(lastCharacter: string, currentCharacter: string): boolea
     );
 }
 
-function syntaxErrorPoints(character: string): number {
+function getSyntaxErrorPoints(character: string): number {
     switch (character) {
         case ")":
             return 3;
@@ -180,8 +180,23 @@ function syntaxErrorPoints(character: string): number {
     }
 }
 
+function getAutoCompletePoints(character: string): number {
+    switch (character) {
+        case "(":
+            return 1;
+        case "[":
+            return 2;
+        case "{":
+            return 3;
+        case "<":
+            return 4;
+        default:
+            return undefined;
+    }
+}
+
 function dayTenPartOne(): void {
-    let score: number = 0;
+    let errorScore: number = 0;
     for (const line of lines) {
         const stack: string[] = [];
         const chunks: string[] = [];
@@ -197,7 +212,7 @@ function dayTenPartOne(): void {
                 if (isValidClosure(lastCharacter, currentCharacter)) {
                     chunk = chunk + currentCharacter;
                 } else {
-                    score += syntaxErrorPoints(currentCharacter);
+                    errorScore += getSyntaxErrorPoints(currentCharacter);
                     break;
                 }
                 if (stack.length === 0) {
@@ -210,7 +225,57 @@ function dayTenPartOne(): void {
             }
         }
     }
-    console.log("Score: " + score);
+    console.log("Score: " + errorScore);
 }
 
-function dayTenPartTwo(): void {}
+function dayTenPartTwo(): void {
+    let errorScore: number = 0;
+    const autoCompleteScores: number[] = [];
+    for (const line of lines) {
+        const stack: string[] = [];
+        const chunks: string[] = [];
+        const characters: string[] = line.split("").reverse();
+        let chunk: string = "";
+        let isError: boolean = false;
+        while (characters.length > 0) {
+            const currentCharacter = characters.pop();
+            if (isOpenDelimiter(currentCharacter)) {
+                chunk = chunk + currentCharacter;
+                stack.push(currentCharacter);
+            } else if (isCloseDelimiter(currentCharacter)) {
+                const lastCharacter: string = stack.pop();
+                if (isValidClosure(lastCharacter, currentCharacter)) {
+                    chunk = chunk + currentCharacter;
+                } else {
+                    errorScore += getSyntaxErrorPoints(currentCharacter);
+                    isError = true;
+                    break;
+                }
+                if (stack.length === 0) {
+                    console.log(chunk);
+                    chunks.push(chunk);
+                    chunk = "";
+                }
+            } else {
+                isError = true;
+                break;
+            }
+        }
+        if (!isError) {
+            let autoCompleteScore: number = 0;
+            while (stack.length > 0) {
+                const currentCharacter = stack.pop();
+                chunk = chunk + currentCharacter;
+                autoCompleteScore = autoCompleteScore * 5 + getAutoCompletePoints(currentCharacter);
+            }
+            autoCompleteScores.push(autoCompleteScore);
+        }
+    }
+    console.log("Error score: " + errorScore);
+    autoCompleteScores.sort((a, b) => {
+        return a - b;
+    });
+    console.log(autoCompleteScores);
+    const index: number = Math.floor(autoCompleteScores.length / 2);
+    console.log("Autocomplete score: " + autoCompleteScores[index]);
+}
