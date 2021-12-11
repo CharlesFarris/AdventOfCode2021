@@ -1,4 +1,4 @@
-import { Point, Map, mapFromLines } from "./shared";
+import { Point, Map, mapFromLines, mapCopyShape, pointFromMapIndex, getAdjacentPoints } from "./shared";
 
 test("point construtor", () => {
     const x: number = 12;
@@ -52,6 +52,16 @@ test("map getValueAtPoint", () => {
     expect(map.getValueAtPoint(new Point(-1, 0))).toBe(undefined);
 });
 
+test("map getIndex", () => {
+    const map: Map = new Map(3, 2);
+    // inside points
+    expect(map.getIndex(0, 0)).toBe(0);
+    expect(map.getIndex(1, 0)).toBe(1);
+    expect(map.getIndex(0, 1)).toBe(3);
+    // outside points
+    expect(map.getIndex(-1, 0)).toBeUndefined();
+});
+
 test("map setValue", () => {
     const map: Map = new Map(2, 2);
     map.setValue(0, 0, 1);
@@ -74,6 +84,30 @@ test("map setValueAtPoint", () => {
     expect(map.getValue(0, 1)).toBe(3);
     map.setValueAtPoint(new Point(1, 1), 4);
     expect(map.getValue(1, 1)).toBe(4);
+});
+
+test("map addValue", () => {
+    const map: Map = new Map(2, 2, 5);
+    map.addValue(0, 0, 1);
+    expect(map.getValue(0, 0)).toBe(6);
+    map.addValue(1, 0, 2);
+    expect(map.getValue(1, 0)).toBe(7);
+    map.addValue(0, 1, 3);
+    expect(map.getValue(0, 1)).toBe(8);
+    map.addValue(1, 1, 4);
+    expect(map.getValue(1, 1)).toBe(9);
+});
+
+test("map addValueAtPoint", () => {
+    const map: Map = new Map(2, 2, 5);
+    map.addValueAtPoint(new Point(0, 0), 1);
+    expect(map.getValue(0, 0)).toBe(6);
+    map.addValueAtPoint(new Point(1, 0), 2);
+    expect(map.getValue(1, 0)).toBe(7);
+    map.addValueAtPoint(new Point(0, 1), 3);
+    expect(map.getValue(0, 1)).toBe(8);
+    map.addValueAtPoint(new Point(1, 1), 4);
+    expect(map.getValue(1, 1)).toBe(9);
 });
 
 test("map isInMap", () => {
@@ -126,4 +160,64 @@ test("mapFromLines", () => {
     expect(map.values[3]).toBe(4);
     expect(map.values[4]).toBe(5);
     expect(map.values[5]).toBe(6);
+});
+
+test("mapCopyShape", () => {
+    const map: Map = new Map(2, 3);
+    const copy = mapCopyShape(map, 9);
+    expect(copy.width).toBe(map.width);
+    expect(copy.height).toBe(map.height);
+    for (const value of copy.values) {
+        expect(value).toBe(9);
+    }
+});
+
+test("pointFromMapIndex", () => {
+    const map: Map = new Map(2, 3);
+    const point0 = pointFromMapIndex(map, 0);
+    expect(point0.x).toBe(0);
+    expect(point0.y).toBe(0);
+
+    const point1 = pointFromMapIndex(map, 1);
+    expect(point1.x).toBe(1);
+    expect(point1.y).toBe(0);
+
+    const point3 = pointFromMapIndex(map, 3);
+    expect(point3.x).toBe(1);
+    expect(point3.y).toBe(1);
+
+    expect(pointFromMapIndex(map, -1)).toBeUndefined();
+});
+
+test("getAdjacentPoints", () => {
+    const point: Point = new Point(0, 0);
+    const adjacentPoints = getAdjacentPoints(point, false);
+    expect(adjacentPoints.length).toBe(4);
+    expect(adjacentPoints[0].x).toBe(-1);
+    expect(adjacentPoints[0].y).toBe(0);
+    expect(adjacentPoints[1].x).toBe(0);
+    expect(adjacentPoints[1].y).toBe(-1);
+    expect(adjacentPoints[2].x).toBe(1);
+    expect(adjacentPoints[2].y).toBe(0);
+    expect(adjacentPoints[3].x).toBe(0);
+    expect(adjacentPoints[3].y).toBe(1);
+
+    const adjacentPointsAll = getAdjacentPoints(point);
+    expect(adjacentPointsAll.length).toBe(8);
+    expect(adjacentPointsAll[0].x).toBe(-1);
+    expect(adjacentPointsAll[0].y).toBe(0);
+    expect(adjacentPointsAll[1].x).toBe(0);
+    expect(adjacentPointsAll[1].y).toBe(-1);
+    expect(adjacentPointsAll[2].x).toBe(1);
+    expect(adjacentPointsAll[2].y).toBe(0);
+    expect(adjacentPointsAll[3].x).toBe(0);
+    expect(adjacentPointsAll[3].y).toBe(1);
+    expect(adjacentPointsAll[4].x).toBe(-1);
+    expect(adjacentPointsAll[4].y).toBe(-1);
+    expect(adjacentPointsAll[5].x).toBe(1);
+    expect(adjacentPointsAll[5].y).toBe(-1);
+    expect(adjacentPointsAll[6].x).toBe(-1);
+    expect(adjacentPointsAll[6].y).toBe(1);
+    expect(adjacentPointsAll[7].x).toBe(1);
+    expect(adjacentPointsAll[7].y).toBe(1);
 });
