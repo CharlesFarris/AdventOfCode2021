@@ -6,12 +6,15 @@
     "build": "tsc",
     "execute": "node ./app/index.js",
     "format": "prettier --list-different .",
-    "format-fix": "prettier --write ."
+    "format-fix": "prettier --write .",
+    "test": "jest",
+    "buildTest": "yarn run build && yarn run test"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-typescript": "^7.16.0",
+    "@types/jest": "^27.0.2",
     "babel-jest": "^27.3.1",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
@@ -24,12 +27,7 @@
     ]
   },
   "jest": {
-    "testEnvironment": "node",
-    "testResultsProcessor": "jest-teamcity",
-    "moduleNameMapper": {
-      "^(.+\\.css)$": "identity-obj-proxy",
-      "^(.+\\.svg)$": "<rootDir>/src/.jestMockImportedFile.js"
-    }
+    "testEnvironment": "node"
   },
   "prettier": {
     "arrowParens": "avoid",
