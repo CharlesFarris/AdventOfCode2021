@@ -49,7 +49,6 @@ function dayElevenPartOne(): void {
         for (let i = 0; i < energyLevelMap.values.length; i++) {
             energyLevelMap.values[i] = Math.min(10, energyLevelMap.values[i] + 1);
         }
-        //logMap(energyLevelMap);
         const flashed: number[] = [];
         let flashIndex: number = getFlashIndex(energyLevelMap, flashed);
         while (flashIndex !== -1) {
@@ -65,7 +64,6 @@ function dayElevenPartOne(): void {
             for (const index of adjacentIndices) {
                 energyLevelMap.values[index] = Math.min(10, energyLevelMap.values[index] + 1);
             }
-            //logMap(energyLevelMap);
             flashIndex = getFlashIndex(energyLevelMap, flashed);
         }
         for (let i = 0; i < energyLevelMap.values.length; i++) {
@@ -74,9 +72,47 @@ function dayElevenPartOne(): void {
                 flashCount++;
             }
         }
-        logMap(energyLevelMap);
+        //logMap(energyLevelMap);
     }
     console.log("Flash Count: " + flashCount);
 }
 
-function dayElevenPartTwo(): void {}
+function dayElevenPartTwo(): void {
+    const energyLevelMap: Map = mapFromLines(initialValues);
+    logMap(energyLevelMap);
+    let step: number = 0;
+    while (true) {
+        step++;
+        console.log("Step: " + step);
+        for (let i = 0; i < energyLevelMap.values.length; i++) {
+            energyLevelMap.values[i] = Math.min(10, energyLevelMap.values[i] + 1);
+        }
+        const flashed: number[] = [];
+        let flashIndex: number = getFlashIndex(energyLevelMap, flashed);
+        while (flashIndex !== -1) {
+            flashed.push(flashIndex);
+            const flashPoint: Point = pointFromMapIndex(energyLevelMap, flashIndex);
+            const adjacentIndices = getAdjacentPoints(flashPoint, true).reduce((indices: number[], point: Point) => {
+                const index = energyLevelMap.getIndexAtPoint(point);
+                if (index !== undefined) {
+                    indices.push(index);
+                }
+                return indices;
+            }, []);
+            for (const index of adjacentIndices) {
+                energyLevelMap.values[index] = Math.min(10, energyLevelMap.values[index] + 1);
+            }
+            flashIndex = getFlashIndex(energyLevelMap, flashed);
+        }
+        for (let i = 0; i < energyLevelMap.values.length; i++) {
+            if (energyLevelMap.values[i] > 9) {
+                energyLevelMap.values[i] = 0;
+            }
+        }
+        //logMap(energyLevelMap);
+        if (flashed.length == energyLevelMap.values.length) {
+            logMap(energyLevelMap);
+            break;
+        }
+    }
+}
