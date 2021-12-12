@@ -172,4 +172,65 @@ function dayTwelvePartOne(): void {
     //console.log(outputGraphviz(graph));
 }
 
-function dayTwelvePartTwo(): void {}
+function dayTwelvePartTwo(): void {
+    const graph: Graph = new Graph();
+    for (const line of lines) {
+        const tokens: string[] = line.split("-");
+        graph.addEdge(tokens[0], tokens[1]);
+    }
+    graph.logGraph();
+    const startNode: GraphNode = graph.getNodeByLabel("start");
+    const endNode: GraphNode = graph.getNodeByLabel("end");
+    const paths: GraphPath[] = [new GraphPath([startNode])];
+    const finishedPaths: GraphPath[] = [];
+    const discardedPaths: GraphPath[] = [];
+    while (paths.length > 0) {
+        const currentPath: GraphPath = paths.pop();
+        const lastNode = currentPath.getLastNode();
+        const adjacentNodes: GraphNode[] = graph.getAdjacent(lastNode);
+        for (const adjacentNode of adjacentNodes) {
+            const newPath = currentPath.clone(adjacentNode);
+            if (adjacentNode === endNode) {
+                finishedPaths.push(newPath);
+            } else if (adjacentNode === startNode) {
+                discardedPaths.push(newPath);
+            } else {
+                const checkSmallCave: boolean = isSmallCave(adjacentNode, true);
+                if (checkSmallCave) {
+                    const smallCaveCounts: object = newPath.getNodes().reduce((counts: object, node: GraphNode) => {
+                        if (isSmallCave(node, false)) {
+                            if (counts[node.label] === undefined) {
+                                counts[node.label] = 0;
+                            }
+                            counts[node.label] = counts[node.label] + 1;
+                        }
+                        return counts;
+                    }, {});
+                    let threeVisitCount: number = 0;
+                    let twoVisitCount: number = 0;
+                    for (const key in smallCaveCounts) {
+                        switch (smallCaveCounts[key]) {
+                            case 2:
+                                twoVisitCount++;
+                                break;
+                            case 3:
+                                threeVisitCount++;
+                                break;
+                        }
+                    }
+                    if (twoVisitCount > 1 || threeVisitCount > 0) {
+                        discardedPaths.push(newPath);
+                    } else {
+                        paths.push(newPath);
+                    }
+                } else {
+                    paths.push(newPath);
+                }
+            }
+        }
+    }
+    console.log("Finished Path: " + finishedPaths.length);
+    for (const path of finishedPaths) {
+        //console.log(path.id);
+    }
+}
