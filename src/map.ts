@@ -1,5 +1,3 @@
-import { Point } from "./point";
-
 export { Map, mapFromLines };
 
 class Map {
@@ -18,12 +16,16 @@ class Map {
     }
 
     setValue(x: number, y: number, value: number): void {
-        this.values[this.getIndex(x, y)] = value;
+        if (this.isInMap(x, y)) {
+            this.values[this.getIndex(x, y)] = value;
+        }
     }
 
     addValue(x: number, y: number, value: number): void {
-        const index = this.getIndex(x, y);
-        this.values[index] = this.values[index] + value;
+        if (this.isInMap(x, y)) {
+            const index = this.getIndex(x, y);
+            this.values[index] = this.values[index] + value;
+        }
     }
 
     isInMap(x: number, y: number): boolean {
@@ -48,6 +50,5 @@ function mapFromLines(lines: string[]): Map {
             map.setValue(x, y, parseInt(character));
             return xMap;
         }, yMap);
-        return yMap;
     }, map);
 }

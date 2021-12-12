@@ -1,5 +1,6 @@
 import { Point } from "./point";
 import { Map } from "./map";
+import { Graph, GraphNode, GraphEdge } from "./graph";
 
 declare module "./point" {
     interface Point {
@@ -34,7 +35,7 @@ declare module "./map" {
         addValueAtPoint(point: Point, value: number): void;
         isPointInMap(point: Point): boolean;
         getIndexAtPoint(point: Point): number;
-        toLog() : void;
+        toLog(): void;
         pointFromMapIndex(index: number): Point;
     }
 }
@@ -65,7 +66,7 @@ Map.prototype.toLog = function logMap() {
         const start: number = y * this.width;
         console.log(this.values.slice(start, start + this.width).join(""));
     }
-}
+};
 
 Map.prototype.pointFromMapIndex = function pointFromMapIndex(index: number): Point {
     if (0 <= index && index < this.values.length) {
@@ -74,4 +75,23 @@ Map.prototype.pointFromMapIndex = function pointFromMapIndex(index: number): Poi
         return new Point(x, y);
     }
     return undefined;
+};
+
+declare module "./graph" {
+    interface Graph {
+        logGraph(): void;
+    }
 }
+
+Graph.prototype.logGraph = function logGraph(): void {
+    const nodes: GraphNode[] = this.getNodes();
+    console.log("Node: " + nodes.length);
+    for (const node of nodes) {
+        console.log(node.label);
+    }
+    const edges: GraphEdge[] = this.getEdges();
+    console.log("Edges: " + edges.length);
+    for (const edge of edges) {
+        console.log(edge.start.label + " - " + edge.end.label);
+    }
+};
