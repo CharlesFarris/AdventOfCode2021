@@ -1,6 +1,8 @@
 // AoC Day 11 Challenge
 
-import { getAdjacentPoints, Map, mapCopyShape, mapFromLines, Point, pointFromMapIndex, logMap } from "./shared";
+import { Map, mapFromLines } from "./map";
+import { Point } from "./point";
+import "./extensions";
 
 /*
 // Test values
@@ -42,7 +44,7 @@ function getFlashIndex(map: Map, flashed: number[]) {
 
 function dayElevenPartOne(): void {
     const energyLevelMap: Map = mapFromLines(initialValues);
-    logMap(energyLevelMap);
+    energyLevelMap.toLog();
     let flashCount: number = 0;
     for (let step = 0; step < 100; step++) {
         console.log("Step: " + step);
@@ -53,8 +55,8 @@ function dayElevenPartOne(): void {
         let flashIndex: number = getFlashIndex(energyLevelMap, flashed);
         while (flashIndex !== -1) {
             flashed.push(flashIndex);
-            const flashPoint: Point = pointFromMapIndex(energyLevelMap, flashIndex);
-            const adjacentIndices = getAdjacentPoints(flashPoint, true).reduce((indices: number[], point: Point) => {
+            const flashPoint: Point = energyLevelMap.pointFromMapIndex(flashIndex);
+            const adjacentIndices = flashPoint.getAdjacentPoints(true).reduce((indices: number[], point: Point) => {
                 const index = energyLevelMap.getIndexAtPoint(point);
                 if (index !== undefined) {
                     indices.push(index);
@@ -72,14 +74,14 @@ function dayElevenPartOne(): void {
                 flashCount++;
             }
         }
-        //logMap(energyLevelMap);
+        //energyLevelMap.toLog();
     }
     console.log("Flash Count: " + flashCount);
 }
 
 function dayElevenPartTwo(): void {
     const energyLevelMap: Map = mapFromLines(initialValues);
-    logMap(energyLevelMap);
+    energyLevelMap.toLog();
     let step: number = 0;
     while (true) {
         step++;
@@ -91,8 +93,8 @@ function dayElevenPartTwo(): void {
         let flashIndex: number = getFlashIndex(energyLevelMap, flashed);
         while (flashIndex !== -1) {
             flashed.push(flashIndex);
-            const flashPoint: Point = pointFromMapIndex(energyLevelMap, flashIndex);
-            const adjacentIndices = getAdjacentPoints(flashPoint, true).reduce((indices: number[], point: Point) => {
+            const flashPoint: Point = energyLevelMap.pointFromMapIndex(flashIndex);
+            const adjacentIndices = flashPoint.getAdjacentPoints(true).reduce((indices: number[], point: Point) => {
                 const index = energyLevelMap.getIndexAtPoint(point);
                 if (index !== undefined) {
                     indices.push(index);
@@ -109,9 +111,9 @@ function dayElevenPartTwo(): void {
                 energyLevelMap.values[i] = 0;
             }
         }
-        //logMap(energyLevelMap);
+        //energyLevelMap.toLog();
         if (flashed.length == energyLevelMap.values.length) {
-            logMap(energyLevelMap);
+            energyLevelMap.toLog();
             break;
         }
     }
