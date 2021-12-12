@@ -27,7 +27,8 @@
     ]
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [ "./app/*"]
   },
   "prettier": {
     "arrowParens": "avoid",
