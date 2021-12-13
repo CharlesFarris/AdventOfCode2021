@@ -13,7 +13,7 @@
     "lint-style": "stylelint --max-warnings 0 **",
     "start": "node ./app/index.js",
     "test": "jest",
-    "verify": "yarn run format && yarn run compile-ts && yarn run lint-es && yarn run lint-style && yarn run test"
+    "verify": "yarn run format && yarn run compile-ts && yarn run lint-es && yarn run test"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
