@@ -17,24 +17,34 @@
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@pli/eslint-config": "^11.0.0",
     "@pli/sync": "^11.0.0",
     "@testing-library/jest-dom": "^5.15.0",
+    "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.0.2",
+    "@types/react": "^17.0.35",
+    "@types/react-dom": "^17.0.11",
     "@types/testing-library__jest-dom": "^5.14.1",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "babel-jest": "^27.3.1",
     "eslint": "^8.2.0",
+    "eslint-plugin-css-modules": "^2.11.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jest": "^25.2.4",
     "eslint-plugin-jsdoc": "^37.0.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.27.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-testing-library": "^5.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "stylelint": "^14.1.0",
     "tslib": "^2.3.1",
     "typescript": "^4.5.2"
@@ -42,6 +52,12 @@
   "babel": {
     "presets": [
       "@babel/preset-env",
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "automatic"
+        }
+      ],
       "@babel/preset-typescript"
     ]
   },
@@ -101,7 +117,11 @@
     "testEnvironment": "node",
     "modulePathIgnorePatterns": [
       "./app/*"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^(.+\\.css)$": "identity-obj-proxy",
+      "^(.+\\.svg)$": "<rootDir>/src/.jestMockImportedFile.js"
+    }
   },
   "prettier": {
     "arrowParens": "avoid",

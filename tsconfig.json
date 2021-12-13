@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
+    "allowJs": false,
     "outDir": "app",
     "lib": ["ES2015", "DOM"],
-    "sourceMap": true
+    "sourceMap": true,
+    "strict": true
   },
   "include": ["src/**/*"]
 }
