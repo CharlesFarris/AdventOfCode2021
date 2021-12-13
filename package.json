@@ -4,20 +4,39 @@
   "main": "app/index.js",
   "scripts": {
     "build": "tsc",
-    "execute": "node ./app/index.js",
+    "clobber": "git -c core.longpaths=true clean -dfx",
+    "compile-ts": "tsc --noEmit --pretty",
     "format": "prettier --list-different .",
     "format-fix": "prettier --write .",
+    "lint-es": "eslint --max-warnings 0 --cache --cache-location node_modules/.eslint.cache **",
+    "lint-style": "stylelint --max-warnings 0 **",
+    "start": "node ./app/index.js",
     "test": "jest",
-    "buildTest": "yarn run build && yarn run test"
+    "verify": "yarn run format && yarn run compile-ts && yarn run lint-es && yarn run lint-style && yarn run test"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-typescript": "^7.16.0",
+    "@pli/eslint-config": "^11.0.0",
+    "@pli/sync": "^11.0.0",
+    "@testing-library/jest-dom": "^5.15.0",
     "@types/jest": "^27.0.2",
+    "@types/testing-library__jest-dom": "^5.14.1",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
     "babel-jest": "^27.3.1",
+    "eslint": "^8.2.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jest": "^25.2.4",
+    "eslint-plugin-jsdoc": "^37.0.3",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-testing-library": "^5.0.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
+    "stylelint": "^14.1.0",
+    "tslib": "^2.3.1",
     "typescript": "^4.5.2"
   },
   "babel": {
@@ -26,9 +45,63 @@
       "@babel/preset-typescript"
     ]
   },
+  "eslintConfig": {
+    "extends": [
+      "@pli/eslint-config"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "src/**/*.ts",
+          "src/**/*.tsx"
+        ],
+        "env": {
+          "browser": true
+        },
+        "extends": [
+          "@pli/eslint-config/typescript",
+          "@pli/eslint-config/typescript-checked"
+        ],
+        "parserOptions": {
+          "project": "tsconfig.json"
+        }
+      },
+      {
+        "files": [
+          "src/**/*.tsx"
+        ],
+        "extends": [
+          "@pli/eslint-config/react",
+          "plugin:react/jsx-runtime"
+        ],
+        "rules": {
+          "@typescript-eslint/explicit-function-return-type": "off",
+          "import/no-default-export": "off"
+        }
+      },
+      {
+        "files": [
+          "src/**/*.test.*"
+        ],
+        "env": {
+          "node": true,
+          "jest": true
+        },
+        "extends": [
+          "@pli/eslint-config/testing"
+        ],
+        "rules": {
+          "import/no-unassigned-import": "off"
+        }
+      }
+    ],
+    "root": true
+  },
   "jest": {
     "testEnvironment": "node",
-    "modulePathIgnorePatterns": [ "./app/*"]
+    "modulePathIgnorePatterns": [
+      "./app/*"
+    ]
   },
   "prettier": {
     "arrowParens": "avoid",
@@ -49,6 +122,12 @@
         }
       }
     ]
+  },
+  "stylelint": {
+    "extends": "@pli/sync/stylelint",
+    "rules": {
+      "custom-property-empty-line-before": null
+    }
   },
   "wallaby": {
     "autoDetect": true
