@@ -1,7 +1,11 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable no-console */
 // AoC Day 12 Challenge
 
-import { Graph, GraphNode } from "./graph";
+// eslint-disable-next-line import/no-unassigned-import
 import "./extensions";
+
+import { Graph, GraphNode } from "./graph";
 
 export { dayTwelvePartOne, dayTwelvePartTwo };
 
@@ -86,7 +90,7 @@ class GraphPath {
         return new GraphPath(node === undefined ? this.nodes : this.nodes.concat(node));
     }
 
-    getLastNode(): GraphNode {
+    getLastNode(): GraphNode | undefined {
         return this.nodes.length === 0 ? undefined : this.nodes[this.nodes.length - 1];
     }
 
@@ -112,19 +116,19 @@ class GraphPath {
     readonly id: string;
 }
 
-function isSmallCave(node: GraphNode, ignoreStartEnd: boolean) {
+function isSmallCave(node: GraphNode, ignoreStartEnd: boolean): boolean {
     if (ignoreStartEnd && (node.label === "start" || node.label === "end")) {
         return false;
     }
     const firstCharacter: string = node.label[0];
-    return firstCharacter == firstCharacter.toLowerCase();
+    return firstCharacter === firstCharacter.toLowerCase();
 }
 
 function outputGraphviz(graph: Graph): string {
     const output: string[] = [];
     output.push("strict graph {");
     for (const edge of graph.getEdges()) {
-        output.push(edge.start.label + " -- " + edge.end.label);
+        output.push(`${edge.start.label} -- ${edge.end.label}`);
     }
     output.push("}");
     return output.join("\n");
@@ -137,14 +141,26 @@ function dayTwelvePartOne(): void {
         graph.addEdge(tokens[0], tokens[1]);
     }
     graph.logGraph();
-    const startNode: GraphNode = graph.getNodeByLabel("start");
-    const endNode: GraphNode = graph.getNodeByLabel("end");
+    const startNode = graph.getNodeByLabel("start");
+    if (startNode === undefined) {
+        throw new Error("startNode undefined");
+    }
+    const endNode = graph.getNodeByLabel("end");
+    if (endNode === undefined) {
+        throw new Error("endNode undefined");
+    }
     const paths: GraphPath[] = [new GraphPath([startNode])];
     const finishedPaths: GraphPath[] = [];
     const discardedPaths: GraphPath[] = [];
     while (paths.length > 0) {
-        const currentPath: GraphPath = paths.pop();
+        const currentPath = paths.pop();
+        if (currentPath === undefined) {
+            throw new Error("undefined currentPath");
+        }
         const lastNode = currentPath.getLastNode();
+        if (lastNode === undefined) {
+            throw new Error("undefiend lastNode");
+        }
         const adjacentNodes: GraphNode[] = graph.getAdjacent(lastNode);
         for (const adjacentNode of adjacentNodes) {
             const newPath = currentPath.clone(adjacentNode);
@@ -165,11 +181,11 @@ function dayTwelvePartOne(): void {
             }
         }
     }
-    console.log("Finished Path: " + finishedPaths.length);
+    console.log(`Finished Path: ${finishedPaths.length}`);
     for (const path of finishedPaths) {
-        //console.log(path.id);
+        // console.log(path.id);
     }
-    //console.log(outputGraphviz(graph));
+    // console.log(outputGraphviz(graph));
 }
 
 function dayTwelvePartTwo(): void {
@@ -179,14 +195,26 @@ function dayTwelvePartTwo(): void {
         graph.addEdge(tokens[0], tokens[1]);
     }
     graph.logGraph();
-    const startNode: GraphNode = graph.getNodeByLabel("start");
-    const endNode: GraphNode = graph.getNodeByLabel("end");
+    const startNode = graph.getNodeByLabel("start");
+    if (startNode === undefined) {
+        throw new Error("startNode undefined");
+    }
+    const endNode = graph.getNodeByLabel("end");
+    if (endNode === undefined) {
+        throw new Error("endNode undefined");
+    }
     const paths: GraphPath[] = [new GraphPath([startNode])];
     const finishedPaths: GraphPath[] = [];
     const discardedPaths: GraphPath[] = [];
     while (paths.length > 0) {
-        const currentPath: GraphPath = paths.pop();
+        const currentPath = paths.pop();
+        if (currentPath === undefined) {
+            throw new Error("undefined currentPath");
+        }
         const lastNode = currentPath.getLastNode();
+        if (lastNode === undefined) {
+            throw new Error("undefined lastNode");
+        }
         const adjacentNodes: GraphNode[] = graph.getAdjacent(lastNode);
         for (const adjacentNode of adjacentNodes) {
             const newPath = currentPath.clone(adjacentNode);
@@ -197,19 +225,21 @@ function dayTwelvePartTwo(): void {
             } else {
                 const checkSmallCave: boolean = isSmallCave(adjacentNode, true);
                 if (checkSmallCave) {
-                    const smallCaveCounts: object = newPath.getNodes().reduce((counts: object, node: GraphNode) => {
-                        if (isSmallCave(node, false)) {
-                            if (counts[node.label] === undefined) {
-                                counts[node.label] = 0;
+                    const smallCaveCounts: Map<string, number> = newPath
+                        .getNodes()
+                        .reduce((counts: Map<string, number>, node: GraphNode) => {
+                            if (isSmallCave(node, false)) {
+                                if (counts.has(node.label)) {
+                                    counts.set(node.label, 0);
+                                }
+                                counts.set(node.label, counts.get(node.label) ?? 0 + 1);
                             }
-                            counts[node.label] = counts[node.label] + 1;
-                        }
-                        return counts;
-                    }, {});
-                    let threeVisitCount: number = 0;
-                    let twoVisitCount: number = 0;
+                            return counts;
+                        }, new Map<string, number>());
+                    let threeVisitCount = 0;
+                    let twoVisitCount = 0;
                     for (const key in smallCaveCounts) {
-                        switch (smallCaveCounts[key]) {
+                        switch (smallCaveCounts.get(key)) {
                             case 2:
                                 twoVisitCount++;
                                 break;
@@ -229,8 +259,8 @@ function dayTwelvePartTwo(): void {
             }
         }
     }
-    console.log("Finished Path: " + finishedPaths.length);
+    console.log(`Finished Path: ${finishedPaths.length}`);
     for (const path of finishedPaths) {
-        //console.log(path.id);
+        // console.log(path.id);
     }
 }

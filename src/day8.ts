@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // AoC Day 8 Challenge
 
 /*
@@ -223,7 +224,7 @@ const values: string[] = [
 export { dayEightPartOne, dayEightPartTwo };
 
 function dayEightPartOne(): void {
-    let count: number = 0;
+    let count = 0;
     for (const input of values) {
         const tokens: string[] = input.split("|");
         const outputs: string[] = tokens[1]
@@ -237,7 +238,7 @@ function dayEightPartOne(): void {
             return localCount;
         }, count);
     }
-    console.log("Count: " + count);
+    console.log(`Count: ${count}`);
 }
 
 function sortPattern(pattern: string): string {
@@ -253,7 +254,7 @@ function containsPattern(left: string, right: string): boolean {
 }
 
 function dayEightPartTwo(): void {
-    let sum: number = 0;
+    let sum = 0;
     for (const input of values) {
         const tokens: string[] = input.split("|");
         const patterns: string[] = tokens[0]
@@ -264,14 +265,14 @@ function dayEightPartTwo(): void {
 
         const mappedPatterns: string[] = [
             "",
-            patterns.find(value => value.length === 2),
+            patterns.find(value => value.length === 2) ?? "",
             "",
             "",
-            patterns.find(value => value.length === 4),
+            patterns.find(value => value.length === 4) ?? "",
             "",
             "",
-            patterns.find(value => value.length === 3),
-            patterns.find(value => value.length === 7),
+            patterns.find(value => value.length === 3) ?? "",
+            patterns.find(value => value.length === 7) ?? "",
             ""
         ];
         patterns.splice(patterns.indexOf(mappedPatterns[1]), 1);
@@ -279,19 +280,23 @@ function dayEightPartTwo(): void {
         patterns.splice(patterns.indexOf(mappedPatterns[7]), 1);
         patterns.splice(patterns.indexOf(mappedPatterns[8]), 1);
 
-        mappedPatterns[9] = patterns.find(value => value.length === 6 && containsPattern(value, mappedPatterns[4]));
+        mappedPatterns[9] =
+            patterns.find(value => value.length === 6 && containsPattern(value, mappedPatterns[4])) ?? "";
         patterns.splice(patterns.indexOf(mappedPatterns[9]), 1);
 
-        mappedPatterns[0] = patterns.find(value => value.length === 6 && containsPattern(value, mappedPatterns[7]));
+        mappedPatterns[0] =
+            patterns.find(value => value.length === 6 && containsPattern(value, mappedPatterns[7])) ?? "";
         patterns.splice(patterns.indexOf(mappedPatterns[0]), 1);
 
-        mappedPatterns[6] = patterns.find(value => value.length == 6);
+        mappedPatterns[6] = patterns.find(value => value.length === 6) ?? "";
         patterns.splice(patterns.indexOf(mappedPatterns[6]), 1);
 
-        mappedPatterns[3] = patterns.find(value => value.length === 5 && containsPattern(value, mappedPatterns[7]));
+        mappedPatterns[3] =
+            patterns.find(value => value.length === 5 && containsPattern(value, mappedPatterns[7])) ?? "";
         patterns.splice(patterns.indexOf(mappedPatterns[3]), 1);
 
-        mappedPatterns[5] = patterns.find(value => value.length === 5 && containsPattern(mappedPatterns[6], value));
+        mappedPatterns[5] =
+            patterns.find(value => value.length === 5 && containsPattern(mappedPatterns[6], value)) ?? "";
         patterns.splice(patterns.indexOf(mappedPatterns[5]), 1);
 
         mappedPatterns[2] = patterns[0];
@@ -309,5 +314,5 @@ function dayEightPartTwo(): void {
             }, "")
         );
     }
-    console.log("Sum: " + sum);
+    console.log(`Sum: ${sum}`);
 }

@@ -1,0 +1,26 @@
+# https://stylelint.io/user-guide/ignore-code
+
+# output and non-source directories/files
+/coverage/
+/app/
+/node_modules/
+/*.local
+/.*cache
+
+# ignore files with no stylelint parser
+# milang, 2021-11-17: starting with version 14, stylelint no longer includes
+# custom syntax parsers (CSS-in-TypeScript, for example); instead, we are
+# expected to install a bunch of extra syntax parser NPM modules and then
+# configure them in "package.json/stylelint"; at this time I don't find
+# the benefit of linting embedded CSS to be worth the extra packages,
+# so I am simply ignoring files that may contain embedded CSS;
+# for more info see https://stylelint.io/migration-guide/to-14,
+# also https://github.com/stylelint/postcss-css-in-js/issues/225
+/src/.jestMockImportedFile.js
+/yarn.lock
+*.config.*
+*.html
+*.js??
+*.md
+*.svg
+*.ts

@@ -1,6 +1,7 @@
+import "./extensions";
+
 import { Map } from "./map";
 import { Point } from "./Point";
-import "./extensions";
 
 test("map getValueAtPoint", () => {
     const map: Map = new Map(2, 2);
@@ -88,18 +89,17 @@ test("getAdjacentPoints", () => {
     expect(adjacentPointsAll[7].y).toBe(1);
 });
 
-
 test("pointFromMapIndex", () => {
     const map: Map = new Map(2, 3);
-    const point0 = map.pointFromMapIndex(0);
+    const point0 = map.pointFromMapIndex(0)!;
     expect(point0.x).toBe(0);
     expect(point0.y).toBe(0);
 
-    const point1 = map.pointFromMapIndex(1);
+    const point1 = map.pointFromMapIndex(1)!;
     expect(point1.x).toBe(1);
     expect(point1.y).toBe(0);
 
-    const point3 = map.pointFromMapIndex(3);
+    const point3 = map.pointFromMapIndex(3)!;
     expect(point3.x).toBe(1);
     expect(point3.y).toBe(1);
 

@@ -1,4 +1,4 @@
-export { GraphNode, GraphEdge, Graph };
+export { Graph, GraphEdge, GraphNode };
 
 class GraphNode {
     constructor(label: string) {
@@ -29,7 +29,7 @@ class Graph {
     }
 
     addNode(label: string): GraphNode {
-        let node: GraphNode = this.getNodeByLabel(label);
+        let node: GraphNode | undefined = this.getNodeByLabel(label);
         if (node === undefined) {
             node = new GraphNode(label);
             this.nodes.push(node);
@@ -37,7 +37,7 @@ class Graph {
         return node;
     }
 
-    getNodeByLabel(label: string): GraphNode {
+    getNodeByLabel(label: string): GraphNode | undefined {
         return this.nodes.find((node: GraphNode) => {
             return node.label === label;
         });
@@ -54,9 +54,10 @@ class Graph {
     addEdge(start: string, end: string): GraphEdge {
         const startNode: GraphNode = this.addNode(start);
         const endNode: GraphNode = this.addNode(end);
-        let edge = this.edges.find((edge: GraphEdge) => {
+        let edge = this.edges.find((localEdge: GraphEdge) => {
             return (
-                (edge.start === startNode && edge.end === endNode) || (edge.start === endNode && edge.end === startNode)
+                (localEdge.start === startNode && localEdge.end === endNode) ||
+                (localEdge.start === endNode && localEdge.end === startNode)
             );
         });
         if (edge === undefined) {

@@ -1,30 +1,36 @@
 export { Map, mapFromLines };
 
 class Map {
-    constructor(width: number, height: number, initalValue: number = 0) {
+    constructor(width: number, height: number, initalValue = 0) {
         this.width = width;
         this.height = height;
         this.values = new Array(width * height).fill(initalValue);
     }
 
-    getIndex(x: number, y: number): number {
+    getIndex(x: number, y: number): number | undefined {
         return this.isInMap(x, y) ? x + this.width * y : undefined;
     }
 
-    getValue(x: number, y: number): number {
-        return this.isInMap(x, y) ? this.values[this.getIndex(x, y)] : undefined;
+    getValue(x: number, y: number): number | undefined {
+        const index = this.getIndex(x, y);
+        return index === undefined ? undefined : this.values[index];
     }
 
     setValue(x: number, y: number, value: number): void {
         if (this.isInMap(x, y)) {
-            this.values[this.getIndex(x, y)] = value;
+            const index = this.getIndex(x, y);
+            if (index !== undefined) {
+                this.values[index] = value;
+            }
         }
     }
 
     addValue(x: number, y: number, value: number): void {
         if (this.isInMap(x, y)) {
             const index = this.getIndex(x, y);
-            this.values[index] = this.values[index] + value;
+            if (index !== undefined) {
+                this.values[index] = this.values[index] + value;
+            }
         }
     }
 
@@ -32,7 +38,7 @@ class Map {
         return 0 <= x && x < this.width && 0 <= y && y < this.height;
     }
 
-    clear(value: number = 0): void {
+    clear(value = 0): void {
         this.values.fill(value);
     }
 
