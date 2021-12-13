@@ -88,7 +88,6 @@ test("getAdjacentPoints", () => {
     expect(adjacentPointsAll[7].y).toBe(1);
 });
 
-
 test("pointFromMapIndex", () => {
     const map: Map = new Map(2, 3);
     const point0 = map.pointFromMapIndex(0);
