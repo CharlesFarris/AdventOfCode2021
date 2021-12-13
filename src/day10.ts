@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // AoC Day 10 Challenge
 
 /*
@@ -165,7 +166,7 @@ function isValidClosure(lastCharacter: string, currentCharacter: string): boolea
     );
 }
 
-function getSyntaxErrorPoints(character: string): number {
+function getSyntaxErrorPoints(character: string): number | undefined {
     switch (character) {
         case ")":
             return 3;
@@ -180,7 +181,7 @@ function getSyntaxErrorPoints(character: string): number {
     }
 }
 
-function getAutoCompletePoints(character: string): number {
+function getAutoCompletePoints(character: string): number | undefined {
     switch (character) {
         case "(":
             return 1;
@@ -196,23 +197,23 @@ function getAutoCompletePoints(character: string): number {
 }
 
 function dayTenPartOne(): void {
-    let errorScore: number = 0;
+    let errorScore = 0;
     for (const line of lines) {
         const stack: string[] = [];
         const chunks: string[] = [];
         const characters: string[] = line.split("").reverse();
-        let chunk: string = "";
+        let chunk = "";
         while (characters.length > 0) {
-            const currentCharacter = characters.pop();
+            const currentCharacter = characters.pop() ?? "";
             if (isOpenDelimiter(currentCharacter)) {
                 chunk = chunk + currentCharacter;
                 stack.push(currentCharacter);
             } else if (isCloseDelimiter(currentCharacter)) {
-                const lastCharacter: string = stack.pop();
+                const lastCharacter: string = stack.pop() ?? "";
                 if (isValidClosure(lastCharacter, currentCharacter)) {
                     chunk = chunk + currentCharacter;
                 } else {
-                    errorScore += getSyntaxErrorPoints(currentCharacter);
+                    errorScore += getSyntaxErrorPoints(currentCharacter) ?? 0;
                     break;
                 }
                 if (stack.length === 0) {
@@ -225,29 +226,29 @@ function dayTenPartOne(): void {
             }
         }
     }
-    console.log("Score: " + errorScore);
+    console.log(`Score: ${errorScore}`);
 }
 
 function dayTenPartTwo(): void {
-    let errorScore: number = 0;
+    let errorScore = 0;
     const autoCompleteScores: number[] = [];
     for (const line of lines) {
         const stack: string[] = [];
         const chunks: string[] = [];
         const characters: string[] = line.split("").reverse();
-        let chunk: string = "";
-        let isError: boolean = false;
+        let chunk = "";
+        let isError = false;
         while (characters.length > 0) {
-            const currentCharacter = characters.pop();
+            const currentCharacter = characters.pop() ?? "";
             if (isOpenDelimiter(currentCharacter)) {
                 chunk = chunk + currentCharacter;
                 stack.push(currentCharacter);
             } else if (isCloseDelimiter(currentCharacter)) {
-                const lastCharacter: string = stack.pop();
+                const lastCharacter: string = stack.pop() ?? "";
                 if (isValidClosure(lastCharacter, currentCharacter)) {
                     chunk = chunk + currentCharacter;
                 } else {
-                    errorScore += getSyntaxErrorPoints(currentCharacter);
+                    errorScore += getSyntaxErrorPoints(currentCharacter) ?? 0;
                     isError = true;
                     break;
                 }
@@ -262,20 +263,20 @@ function dayTenPartTwo(): void {
             }
         }
         if (!isError) {
-            let autoCompleteScore: number = 0;
+            let autoCompleteScore = 0;
             while (stack.length > 0) {
-                const currentCharacter = stack.pop();
+                const currentCharacter = stack.pop() ?? "";
                 chunk = chunk + currentCharacter;
-                autoCompleteScore = autoCompleteScore * 5 + getAutoCompletePoints(currentCharacter);
+                autoCompleteScore = autoCompleteScore * 5 + (getAutoCompletePoints(currentCharacter) ?? 0);
             }
             autoCompleteScores.push(autoCompleteScore);
         }
     }
-    console.log("Error score: " + errorScore);
+    console.log(`Error score: ${errorScore}`);
     autoCompleteScores.sort((a, b) => {
         return a - b;
     });
     console.log(autoCompleteScores);
     const index: number = Math.floor(autoCompleteScores.length / 2);
-    console.log("Autocomplete score: " + autoCompleteScores[index]);
+    console.log(`Autocomplete score: ${autoCompleteScores[index]}`);
 }

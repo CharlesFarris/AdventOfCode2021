@@ -1,12 +1,15 @@
+/* eslint-disable no-console */
 // AoC Day 2 Challenge
 
 export { dayTwoPartOne, dayTwoPartTwo };
 
+/*
 // Test commands
-//let commands = ["forward 5", "down 5", "forward 8", "up 3", "down 8", "forward 2"];
+let commands = ["forward 5", "down 5", "forward 8", "up 3", "down 8", "forward 2"];
+*/
 
 // Real commands
-let commands = [
+const commands = [
     "forward 6",
     "down 3",
     "forward 8",
@@ -1009,41 +1012,41 @@ let commands = [
     "forward 7"
 ];
 
-function dayTwoPartOne() {
+function dayTwoPartOne(): void {
     let horizontal = 0;
     let depth = 0;
     commands.forEach(command => {
         const tokens = command.split(" ");
         const value = parseInt(tokens[1]);
-        if (tokens[0] == "forward") {
+        if (tokens[0] === "forward") {
             horizontal += value;
-        } else if (tokens[0] == "up") {
+        } else if (tokens[0] === "up") {
             depth -= value;
-        } else if (tokens[0] == "down") {
+        } else if (tokens[0] === "down") {
             depth += value;
         }
     });
-    console.info("Product: " + horizontal * depth);
+    console.info(`Product: ${horizontal * depth}`);
 }
 
-function dayTwoPartTwo() {
+function dayTwoPartTwo(): void {
     let horizontal = 0;
     let depth = 0;
     let aim = 0;
     commands.forEach(command => {
         const tokens = command.split(" ");
         const value = parseInt(tokens[1]);
-        if (tokens[0] == "forward") {
+        if (tokens[0] === "forward") {
             horizontal += value;
             depth += aim * value;
-        } else if (tokens[0] == "up") {
+        } else if (tokens[0] === "up") {
             aim -= value;
-        } else if (tokens[0] == "down") {
+        } else if (tokens[0] === "down") {
             aim += value;
         }
     });
-    console.info("Horizontal: " + horizontal);
-    console.info("Depth: " + depth);
-    console.info("Aim: " + aim);
-    console.info("Product: " + horizontal * depth);
+    console.info(`Horizontal: ${horizontal}`);
+    console.info(`Depth: ${depth}`);
+    console.info(`Aim: ${aim}`);
+    console.info(`Product: ${horizontal * depth}`);
 }

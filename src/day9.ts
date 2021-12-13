@@ -1,6 +1,5 @@
+/* eslint-disable no-console */
 // AoC Day 9 Challenge
-
-import { numberLiteralTypeAnnotation, throwStatement } from "@babel/types";
 
 /*
 // Test values
@@ -154,7 +153,7 @@ class HeightMap {
 
     isLowPoint(x: number, y: number): boolean {
         const value = this.getValue(x, y);
-        let result: boolean = true;
+        let result = true;
         if (this.isValid(x + 1, y)) {
             result = result && value < this.getValue(x + 1, y);
         }
@@ -252,16 +251,16 @@ function dayNinePartOne(): void {
     const heightMap = new HeightMap(inputs);
 
     console.log(heightMap.getRisks());
-    const sum = heightMap.getRisks().reduce((sum: number, risk: number) => {
-        return sum + risk;
+    const sum = heightMap.getRisks().reduce((localSum: number, risk: number) => {
+        return localSum + risk;
     }, 0);
-    console.log("Sum: " + sum);
+    console.log(`Sum: ${sum}`);
 }
 
 function dayNinePartTwo(): void {
     const heightMap = new HeightMap(inputs);
     const lowPoints = heightMap.getLowPoints();
-    let sizes: number[] = [];
+    const sizes: number[] = [];
     for (const lowPoint of lowPoints) {
         const basinMap = new BasinMap(heightMap.width, heightMap.height);
         const processed: number[] = [];
@@ -269,6 +268,9 @@ function dayNinePartTwo(): void {
         stack.push(lowPoint);
         while (stack.length > 0) {
             const currentPoint = stack.pop();
+            if (currentPoint === undefined) {
+                throw new Error("currentPoint undefined");
+            }
             processed.push(currentPoint.index);
             basinMap.setValueAtPoint(currentPoint, heightMap.values[currentPoint.index]);
             const adjacentPoints: Point[] = heightMap.getAdjacentPoints(currentPoint);
@@ -282,17 +284,17 @@ function dayNinePartTwo(): void {
                     stack.push(adjacentPoint);
                 }
             }
-            //console.log(stack);
-            //console.log(basinMap.values);
+            // console.log(stack);
+            // console.log(basinMap.values);
         }
         const size: number = basinMap.values.reduce((count, value) => {
             return count + (value < 9 ? 1 : 0);
         }, 0);
         sizes.push(size);
-        console.log("Basin Size: " + size);
+        console.log(`Basin Size: ${size}`);
     }
     const sortedSizes: number[] = sizes.sort((a, b) => {
         return b - a;
     });
-    console.log("Product: " + sortedSizes[0] * sortedSizes[1] * sortedSizes[2]);
+    console.log(`Product: ${sortedSizes[0] * sortedSizes[1] * sortedSizes[2]}`);
 }

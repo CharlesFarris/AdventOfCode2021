@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
 // AoC Day 3 Challenge
 
 export { dayThreePartOne, dayThreePartTwo };
 
+/*
 // Test values
-//const values = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010",];
+const values = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010",];
+*/
 
 // Real values
 const values = [
@@ -1009,19 +1012,19 @@ const values = [
     "111110101010"
 ];
 
-function dayThreePartOne() {
+function dayThreePartOne(): void {
     const bitCount = values[0].length;
     let gammaString = "";
     let epsilonString = "";
     for (let bit = 0; bit < bitCount; bit++) {
         let oneBits = 0;
         values.forEach(value => {
-            if (value[bit] == "1") {
+            if (value[bit] === "1") {
                 oneBits++;
             }
         });
         const zeroBits = values.length - oneBits;
-        console.info("bit: " + bit + " oneBits: " + oneBits + " zeroBits: " + zeroBits);
+        console.info(`bit: ${bit} oneBits: ${oneBits} zeroBits: ${zeroBits}`);
         if (oneBits > zeroBits) {
             gammaString += "1";
             epsilonString += "0";
@@ -1031,18 +1034,18 @@ function dayThreePartOne() {
         }
     }
     const gamma = parseInt(gammaString, 2);
-    console.info("Gamma: " + gammaString + " " + gamma);
+    console.info(`Gamma: ${gammaString} ${gamma}`);
     const epsilon = parseInt(epsilonString, 2);
-    console.info("Epsilon: " + epsilonString + " " + epsilon);
-    console.info("Product: " + gamma * epsilon);
+    console.info(`Epsilon: ${epsilonString} ${epsilon}`);
+    console.info(`Product: ${gamma * epsilon}`);
 }
 
-function dayThreePartTwo() {
-    var oxygenRating = findRating(true);
-    console.info("O2 Rating: " + oxygenRating);
-    var carbonDioxideRating = findRating(false);
-    console.info("CO2 Rating: " + carbonDioxideRating);
-    console.info("Product: " + oxygenRating * carbonDioxideRating);
+function dayThreePartTwo(): void {
+    const oxygenRating = findRating(true);
+    console.info(`O2 Rating: ${oxygenRating}`);
+    const carbonDioxideRating = findRating(false);
+    console.info(`CO2 Rating: ${carbonDioxideRating}`);
+    console.info(`Product: ${oxygenRating * carbonDioxideRating}`);
 }
 
 function findRating(useMostCommon: boolean): number {
@@ -1050,23 +1053,23 @@ function findRating(useMostCommon: boolean): number {
     let currentValues = values;
     for (let bit = 0; bit < bitCount; bit++) {
         console.info(currentValues);
-        if (currentValues.length == 1) {
+        if (currentValues.length === 1) {
             break;
         }
-        let newValues = [];
+        const newValues: string[] = [];
         let oneBits = 0;
         currentValues.forEach(value => {
-            if (value[bit] == "1") {
+            if (value[bit] === "1") {
                 oneBits++;
             }
         });
         const zeroBits = currentValues.length - oneBits;
-        console.info("bit: " + bit + " oneBits: " + oneBits + " zeroBits: " + zeroBits);
+        console.info(`bit: ${bit} oneBits: ${oneBits} zeroBits: ${zeroBits}`);
         let selectedBit = "";
         if (useMostCommon) {
             if (oneBits > zeroBits) {
                 selectedBit = "1";
-            } else if (oneBits == zeroBits) {
+            } else if (oneBits === zeroBits) {
                 selectedBit = "1";
             } else {
                 selectedBit = "0";
@@ -1074,14 +1077,14 @@ function findRating(useMostCommon: boolean): number {
         } else {
             if (oneBits < zeroBits) {
                 selectedBit = "1";
-            } else if (oneBits == zeroBits) {
+            } else if (oneBits === zeroBits) {
                 selectedBit = "0";
             } else {
                 selectedBit = "0";
             }
         }
         currentValues.forEach(value => {
-            if (value[bit] == selectedBit) {
+            if (value[bit] === selectedBit) {
                 newValues.push(value);
             }
         });

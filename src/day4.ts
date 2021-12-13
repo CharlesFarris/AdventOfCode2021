@@ -1,8 +1,11 @@
+/* eslint-disable no-console */
 // AoC Day 4 Challenge
 
+/*
 // Test values
-//const drawnNumbers: number[] = [7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 10, 16, 13, 6, 15, 25, 12, 22, 18, 20, 8, 19, 3, 26, 1];
-//const boardValues: number[] = [22, 13, 17, 11, 0, 8, 2, 23, 4, 24, 21, 9, 14, 16, 7, 6, 10, 3, 18, 5, 1, 12, 20, 15, 19, 3, 15, 0, 2, 22, 9, 18, 13, 17, 5, 19, 8, 7, 25, 23, 20, 11, 10, 24, 4, 14, 21, 16, 12, 6, 14, 21, 17, 24, 4, 10, 16, 15, 9, 19, 18, 8, 23, 26, 20, 22, 11, 13, 6, 5, 2, 0, 12, 3, 7];
+const drawnNumbers: number[] = [7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 10, 16, 13, 6, 15, 25, 12, 22, 18, 20, 8, 19, 3, 26, 1];
+const boardValues: number[] = [22, 13, 17, 11, 0, 8, 2, 23, 4, 24, 21, 9, 14, 16, 7, 6, 10, 3, 18, 5, 1, 12, 20, 15, 19, 3, 15, 0, 2, 22, 9, 18, 13, 17, 5, 19, 8, 7, 25, 23, 20, 11, 10, 24, 4, 14, 21, 16, 12, 6, 14, 21, 17, 24, 4, 10, 16, 15, 9, 19, 18, 8, 23, 26, 20, 22, 11, 13, 6, 5, 2, 0, 12, 3, 7];
+*/
 
 // Real values
 const drawnNumbers: number[] = [
@@ -109,41 +112,41 @@ class Board {
     readonly index: number;
     readonly board: number[] = [];
     readonly numbers: number[] = [];
-    isBingo: boolean = false;
+    isBingo = false;
 
     constructor(index: number, sourceNumbers: number[]) {
         this.index = index;
-        for (let i = 0; i < sourceNumbers.length; i++) {
-            this.numbers.push(sourceNumbers[i]);
+        for (const value of sourceNumbers) {
+            this.numbers.push(value);
             this.board.push(0);
         }
     }
 
     checkNumber(drawnNumber: number): boolean {
         for (let i = 0; i < this.numbers.length; i++) {
-            if (this.numbers[i] == drawnNumber) {
+            if (this.numbers[i] === drawnNumber) {
                 this.board[i] = 1;
                 break;
             }
         }
         this.isBingo =
-            this.board[0] + this.board[1] + this.board[2] + this.board[3] + this.board[4] == 5 ||
-            this.board[5] + this.board[6] + this.board[7] + this.board[8] + this.board[9] == 5 ||
-            this.board[10] + this.board[11] + this.board[12] + this.board[13] + this.board[14] == 5 ||
-            this.board[15] + this.board[16] + this.board[17] + this.board[18] + this.board[19] == 5 ||
-            this.board[20] + this.board[21] + this.board[22] + this.board[23] + this.board[24] == 5 ||
-            this.board[0] + this.board[5] + this.board[10] + this.board[15] + this.board[20] == 5 ||
-            this.board[1] + this.board[6] + this.board[11] + this.board[16] + this.board[21] == 5 ||
-            this.board[2] + this.board[7] + this.board[12] + this.board[17] + this.board[22] == 5 ||
-            this.board[3] + this.board[8] + this.board[13] + this.board[18] + this.board[23] == 5 ||
-            this.board[4] + this.board[9] + this.board[14] + this.board[19] + this.board[24] == 5;
+            this.board[0] + this.board[1] + this.board[2] + this.board[3] + this.board[4] === 5 ||
+            this.board[5] + this.board[6] + this.board[7] + this.board[8] + this.board[9] === 5 ||
+            this.board[10] + this.board[11] + this.board[12] + this.board[13] + this.board[14] === 5 ||
+            this.board[15] + this.board[16] + this.board[17] + this.board[18] + this.board[19] === 5 ||
+            this.board[20] + this.board[21] + this.board[22] + this.board[23] + this.board[24] === 5 ||
+            this.board[0] + this.board[5] + this.board[10] + this.board[15] + this.board[20] === 5 ||
+            this.board[1] + this.board[6] + this.board[11] + this.board[16] + this.board[21] === 5 ||
+            this.board[2] + this.board[7] + this.board[12] + this.board[17] + this.board[22] === 5 ||
+            this.board[3] + this.board[8] + this.board[13] + this.board[18] + this.board[23] === 5 ||
+            this.board[4] + this.board[9] + this.board[14] + this.board[19] + this.board[24] === 5;
         return this.isBingo;
     }
 
     sumUnmarkedNumbers(): number {
-        let sum: number = 0;
+        let sum = 0;
         for (let i = 0; i < this.board.length; i++) {
-            if (this.board[i] == 0) {
+            if (this.board[i] === 0) {
                 sum += this.numbers[i];
             }
         }
@@ -152,13 +155,13 @@ class Board {
 }
 
 function loadBoards(): Board[] {
-    let boards: Board[] = [];
+    const boards: Board[] = [];
     const valuesPerBoard: number = boardWidth * boardLength;
     const boardCount: number = boardValues.length / valuesPerBoard;
-    console.info("Board Count: " + boardCount);
-    for (let i: number = 0; i < boardCount; i++) {
-        let offset: number = i * valuesPerBoard;
-        let localBoardValues: number[] = [];
+    console.info(`Board Count: ${boardCount}`);
+    for (let i = 0; i < boardCount; i++) {
+        const offset: number = i * valuesPerBoard;
+        const localBoardValues: number[] = [];
         for (let j = 0; j < boardWidth * boardLength; j++) {
             localBoardValues.push(boardValues[offset + j]);
         }
@@ -167,42 +170,39 @@ function loadBoards(): Board[] {
     return boards;
 }
 
-function dayFourPartOne() {
+function dayFourPartOne(): void {
     const boards = loadBoards();
-    let winningBoard: Board;
-    let drawnNumber: number = -1;
-    for (let i = 0; i < drawnNumbers.length; i++) {
-        drawnNumber = drawnNumbers[i];
+    let winningBoard: Board | undefined;
+    let winningNumber = -1;
+    for (const drawnNumber of drawnNumbers) {
         console.info(drawnNumber);
-        for (let j = 0; j < boards.length; j++) {
-            let board = boards[j];
+        for (const board of boards) {
             if (board.checkNumber(drawnNumber)) {
                 winningBoard = board;
+                winningNumber = drawnNumber;
                 break;
             }
         }
-        if (winningBoard) {
+        if (winningBoard !== undefined) {
             break;
         }
     }
     if (winningBoard) {
-        let product: number = winningBoard.sumUnmarkedNumbers() * drawnNumber;
-        console.info("Product :" + product);
+        const product: number = winningBoard.sumUnmarkedNumbers() * winningNumber;
+        console.info(`Product :${product}`);
     }
 }
 
-function dayFourPartTwo() {
-    let boards = loadBoards();
-    for (let i = 0; i < drawnNumbers.length; i++) {
-        let drawnNumber = drawnNumbers[i];
+function dayFourPartTwo(): void {
+    const boards = loadBoards();
+    for (const drawnNumber of drawnNumbers) {
         console.info(drawnNumber);
-        for (let j = 0; j < boards.length; j++) {
-            let board = boards[j];
-            if (board.isBingo == false) {
+        for (const board of boards) {
+            if (board.isBingo === false) {
                 if (board.checkNumber(drawnNumber)) {
-                    console.log("Board: " + board.index);
+                    console.log(`Board: ${board.index}`);
                     const product: number = board.sumUnmarkedNumbers() * drawnNumber;
-                    console.log("Product: " + product);
+                    console.log(`Product: ${product}`);
                 }
             }
         }

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // Aoc Day 5 Challenge
 
 /*
@@ -533,15 +534,15 @@ class Line {
     }
 
     isHorizontal(): boolean {
-        return this.start.y == this.end.y;
+        return this.start.y === this.end.y;
     }
 
     isVertical(): boolean {
-        return this.start.x == this.end.x;
+        return this.start.x === this.end.x;
     }
 
     isDiagonal(): boolean {
-        return Math.abs(this.start.x - this.end.x) == Math.abs(this.start.y - this.end.y);
+        return Math.abs(this.start.x - this.end.x) === Math.abs(this.start.y - this.end.y);
     }
 }
 
@@ -580,7 +581,7 @@ class Map {
         return x + this.width * y;
     }
 
-    setLine(line: Line, allowDiagonal: boolean = false): void {
+    setLine(line: Line, allowDiagonal = false): void {
         if (line.isHorizontal()) {
             const startX = Math.min(line.start.x, line.end.x);
             const endX = Math.max(line.start.x, line.end.x);
@@ -598,13 +599,14 @@ class Map {
         } else if (allowDiagonal && line.isDiagonal()) {
             let x = line.start.x;
             let y = line.start.y;
-            let slopeX = line.start.x < line.end.x ? 1 : -1;
-            let slopeY = line.start.y < line.end.y ? 1 : -1;
+            const slopeX = line.start.x < line.end.x ? 1 : -1;
+            const slopeY = line.start.y < line.end.y ? 1 : -1;
+            // eslint-disable-next-line no-constant-condition
             while (true) {
                 this.set(x, y);
                 x += slopeX;
                 y += slopeY;
-                if (x == line.end.x) {
+                if (x === line.end.x) {
                     this.set(x, y);
                     break;
                 }
@@ -613,33 +615,23 @@ class Map {
     }
 
     print(): void {
-        console.log(this.width + "," + this.height);
+        console.log(`${this.width},${this.height}`);
         for (let y = 0; y < this.height; y++) {
-            let buffer: string = "";
+            let buffer = "";
             for (let x = 0; x < this.width; x++) {
                 const value = this.get(x, y);
-                buffer = buffer + (value == 0 ? "." : value);
+                buffer = buffer + (value === 0 ? "." : value.toString());
             }
             console.log(buffer);
         }
     }
 }
 
-function dayFivePartOne() {
+function dayFivePartOne(): void {
     const lines: Line[] = getLines();
     lines.forEach(line => {
         console.log(
-            line.start.x +
-                "," +
-                line.start.y +
-                " -> " +
-                line.end.x +
-                "," +
-                line.end.y +
-                " " +
-                line.isHorizontal() +
-                " " +
-                line.isVertical()
+            `${line.start.x},${line.start.y} -> ${line.end.x},${line.end.y} ${line.isHorizontal()} ${line.isVertical()}`
         );
     });
     let maxX = -1;
@@ -658,26 +650,16 @@ function dayFivePartOne() {
             count++;
         }
     });
-    console.log("Count: " + count);
+    console.log(`Count: ${count}`);
 }
 
-function dayFivePartTwo() {
+function dayFivePartTwo(): void {
     const lines: Line[] = getLines();
     lines.forEach(line => {
         console.log(
-            line.start.x +
-                "," +
-                line.start.y +
-                " -> " +
-                line.end.x +
-                "," +
-                line.end.y +
-                " " +
-                line.isHorizontal() +
-                " " +
-                line.isVertical() +
-                " " +
-                line.isDiagonal()
+            `${line.start.x},${line.start.y} -> ${line.end.x},${
+                line.end.y
+            } ${line.isHorizontal()} ${line.isVertical()} ${line.isDiagonal()}`
         );
     });
     let maxX = -1;
@@ -697,5 +679,5 @@ function dayFivePartTwo() {
             count++;
         }
     });
-    console.log("Count: " + count);
+    console.log(`Count: ${count}`);
 }

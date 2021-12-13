@@ -1,8 +1,11 @@
+/* eslint-disable no-console */
 // AoC Day 11 Challenge
+
+// eslint-disable-next-line import/no-unassigned-import
+import "./extensions";
 
 import { Map, mapFromLines } from "./map";
 import { Point } from "./point";
-import "./extensions";
 
 /*
 // Test values
@@ -36,7 +39,7 @@ const initialValues: string[] = [
 
 export { dayElevenPartOne, dayElevenPartTwo };
 
-function getFlashIndex(map: Map, flashed: number[]) {
+function getFlashIndex(map: Map, flashed: number[]): number {
     return map.values.findIndex((value: number, index: number) => {
         return value > 9 && flashed.indexOf(index) === -1;
     });
@@ -45,9 +48,9 @@ function getFlashIndex(map: Map, flashed: number[]) {
 function dayElevenPartOne(): void {
     const energyLevelMap: Map = mapFromLines(initialValues);
     energyLevelMap.toLog();
-    let flashCount: number = 0;
+    let flashCount = 0;
     for (let step = 0; step < 100; step++) {
-        console.log("Step: " + step);
+        console.log(`Step: ${step}`);
         for (let i = 0; i < energyLevelMap.values.length; i++) {
             energyLevelMap.values[i] = Math.min(10, energyLevelMap.values[i] + 1);
         }
@@ -55,7 +58,10 @@ function dayElevenPartOne(): void {
         let flashIndex: number = getFlashIndex(energyLevelMap, flashed);
         while (flashIndex !== -1) {
             flashed.push(flashIndex);
-            const flashPoint: Point = energyLevelMap.pointFromMapIndex(flashIndex);
+            const flashPoint = energyLevelMap.pointFromMapIndex(flashIndex);
+            if (flashPoint === undefined) {
+                throw new Error("flashPoint undefined");
+            }
             const adjacentIndices = flashPoint.getAdjacentPoints(true).reduce((indices: number[], point: Point) => {
                 const index = energyLevelMap.getIndexAtPoint(point);
                 if (index !== undefined) {
@@ -74,18 +80,19 @@ function dayElevenPartOne(): void {
                 flashCount++;
             }
         }
-        //energyLevelMap.toLog();
+        // energyLevelMap.toLog();
     }
-    console.log("Flash Count: " + flashCount);
+    console.log(`Flash Count: ${flashCount}`);
 }
 
 function dayElevenPartTwo(): void {
     const energyLevelMap: Map = mapFromLines(initialValues);
     energyLevelMap.toLog();
-    let step: number = 0;
+    let step = 0;
+    // eslint-disable-next-line no-constant-condition
     while (true) {
         step++;
-        console.log("Step: " + step);
+        console.log(`Step: ${step}`);
         for (let i = 0; i < energyLevelMap.values.length; i++) {
             energyLevelMap.values[i] = Math.min(10, energyLevelMap.values[i] + 1);
         }
@@ -93,7 +100,10 @@ function dayElevenPartTwo(): void {
         let flashIndex: number = getFlashIndex(energyLevelMap, flashed);
         while (flashIndex !== -1) {
             flashed.push(flashIndex);
-            const flashPoint: Point = energyLevelMap.pointFromMapIndex(flashIndex);
+            const flashPoint = energyLevelMap.pointFromMapIndex(flashIndex);
+            if (flashPoint === undefined) {
+                throw new Error("flashPoint undefined");
+            }
             const adjacentIndices = flashPoint.getAdjacentPoints(true).reduce((indices: number[], point: Point) => {
                 const index = energyLevelMap.getIndexAtPoint(point);
                 if (index !== undefined) {
@@ -111,8 +121,8 @@ function dayElevenPartTwo(): void {
                 energyLevelMap.values[i] = 0;
             }
         }
-        //energyLevelMap.toLog();
-        if (flashed.length == energyLevelMap.values.length) {
+        // energyLevelMap.toLog();
+        if (flashed.length === energyLevelMap.values.length) {
             energyLevelMap.toLog();
             break;
         }

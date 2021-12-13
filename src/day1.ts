@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
 // AoC Day 1 Challenge
 
 export { dayOnePartOne, dayOnePartTwo };
 
+/*
 // Test Values
-//const measurements = [199, 200, 208, 210, 200, 207, 240, 269, 260, 263];
+const measurements = [199, 200, 208, 210, 200, 207, 240, 269, 260, 263];
+*/
 
 // Real Values
 const measurements = [
@@ -111,18 +114,18 @@ const measurements = [
     5004, 5005, 5006, 5004, 5005, 5018, 5019, 5021, 5022, 5028, 5057, 5058, 5063, 5067, 5068
 ];
 
-function dayOnePartOne() {
+function dayOnePartOne(): void {
     let increased = 0;
     for (let index = 1; index < measurements.length; index++) {
         if (measurements[index] > measurements[index - 1]) {
             increased++;
         }
     }
-    console.info("Increased:" + increased);
+    console.info(`Increased:${increased}`);
 }
 
-function dayOnePartTwo() {
-    let sums = [];
+function dayOnePartTwo(): void {
+    const sums = [];
     for (let index = 0; index < measurements.length - 2; index++) {
         sums.push(measurements[index] + measurements[index + 1] + measurements[index + 2]);
     }
@@ -132,5 +135,5 @@ function dayOnePartTwo() {
             increased++;
         }
     }
-    console.info("Increased:" + increased);
+    console.info(`Increased:${increased}`);
 }

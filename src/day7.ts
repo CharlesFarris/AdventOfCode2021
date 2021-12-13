@@ -1,7 +1,10 @@
+/* eslint-disable no-console */
 // AoC Day 7 Challenge
 
+/*
 // Test values
-//const initialPositions: number[] = [16, 1, 2, 0, 4, 2, 7, 1, 2, 14];
+const initialPositions: number[] = [16, 1, 2, 0, 4, 2, 7, 1, 2, 14];
+*/
 
 // Real values
 const initialPositions: number[] = [
@@ -52,50 +55,50 @@ const initialPositions: number[] = [
 
 export { daySevenPartOne, daySevenPartTwo };
 
-function daySevenPartOne() {
+function daySevenPartOne(): void {
     const minPosition: number = initialPositions.reduce((minimum: number, position: number) =>
         Math.min(minimum, position)
     );
     const maxPosition: number = initialPositions.reduce((maximum: number, position: number) =>
         Math.max(maximum, position)
     );
-    let bestPosition: number = Infinity;
-    let bestFuel: number = Infinity;
+    let bestPosition = Infinity;
+    let bestFuel = Infinity;
     for (let currentPosition: number = minPosition; currentPosition < maxPosition; currentPosition++) {
         const currentFuel = initialPositions.reduce((fuel: number, position: number) => {
             return fuel + Math.abs(currentPosition - position);
         }, 0);
-        console.log("Position: " + currentPosition + " Fuel: " + currentFuel);
+        console.log(`Position: ${currentPosition} Fuel: ${currentFuel}`);
         if (currentFuel < bestFuel) {
             bestPosition = currentPosition;
             bestFuel = currentFuel;
         }
     }
-    console.log("Best Position: " + bestPosition + " Best Fuel: " + bestFuel);
+    console.log(`Best Position: ${bestPosition} Best Fuel: ${bestFuel}`);
 }
 
 function computeFuel(distance: number): number {
     return (distance * (distance + 1)) / 2;
 }
 
-function daySevenPartTwo() {
+function daySevenPartTwo(): void {
     const minPosition: number = initialPositions.reduce((minimum: number, position: number) =>
         Math.min(minimum, position)
     );
     const maxPosition: number = initialPositions.reduce((maximum: number, position: number) =>
         Math.max(maximum, position)
     );
-    let bestPosition: number = Infinity;
-    let bestFuel: number = Infinity;
+    let bestPosition = Infinity;
+    let bestFuel = Infinity;
     for (let currentPosition: number = minPosition; currentPosition < maxPosition; currentPosition++) {
         const currentFuel = initialPositions.reduce((fuel: number, position: number) => {
             return fuel + computeFuel(Math.abs(currentPosition - position));
         }, 0);
-        console.log("Position: " + currentPosition + " Fuel: " + currentFuel);
+        console.log(`Position: ${currentPosition} Fuel: ${currentFuel}`);
         if (currentFuel < bestFuel) {
             bestPosition = currentPosition;
             bestFuel = currentFuel;
         }
     }
-    console.log("Best Position: " + bestPosition + " Best Fuel: " + bestFuel);
+    console.log(`Best Position: ${bestPosition} Best Fuel: ${bestFuel}`);
 }

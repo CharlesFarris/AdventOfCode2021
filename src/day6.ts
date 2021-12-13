@@ -1,7 +1,10 @@
+/* eslint-disable no-console */
 // AoC Day 6 Challenge
 
+/*
 // Test values
-//const initialFish: number[] = [3, 4, 3, 1, 2];
+const initialFish: number[] = [3, 4, 3, 1, 2];
+*/
 
 // Real values
 const initialFish: number[] = [
@@ -17,11 +20,11 @@ const initialFish: number[] = [
 
 export { daySixPartOne, daySixPartTwo };
 
-function daySixPartOne() {
-    let fish = [...initialFish];
+function daySixPartOne(): void {
+    const fish = [...initialFish];
     const numberofDays = 80;
     for (let day = 0; day < numberofDays; day++) {
-        let count = fish.length;
+        const count = fish.length;
         for (let i = 0; i < count; i++) {
             let time = fish[i];
             time--;
@@ -32,12 +35,12 @@ function daySixPartOne() {
             fish[i] = time;
         }
     }
-    console.log("Count: " + fish.length);
+    console.log(`Count: ${fish.length}`);
 }
 
-function daySixPartTwo() {
+function daySixPartTwo(): void {
     let fish = new Array(8).fill(0);
-    fish = initialFish.reduce((x, time) => {
+    fish = initialFish.reduce((x: number[], time) => {
         x[time] = x[time] + 1;
         return x;
     }, fish);
@@ -53,5 +56,5 @@ function daySixPartTwo() {
     const count = fish.reduce((total: number, time: number) => {
         return total + time;
     }, 0);
-    console.log("Count: " + count);
+    console.log(`Count: ${count}`);
 }

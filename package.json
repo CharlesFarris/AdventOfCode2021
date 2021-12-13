@@ -2,8 +2,9 @@
   "name": "adventofcode2021",
   "version": "1.0.0",
   "main": "app/index.js",
+  "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --noEmit --pretty",
     "clobber": "git -c core.longpaths=true clean -dfx",
     "compile-ts": "tsc --noEmit --pretty",
     "format": "prettier --list-different .",

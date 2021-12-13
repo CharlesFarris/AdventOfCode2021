@@ -1,9 +1,9 @@
 import { Map, mapFromLines } from "./map";
 
 test("map constructor", () => {
-    const width: number = 3;
-    const height: number = 4;
-    const initialValue: number = 5;
+    const width = 3;
+    const height = 4;
+    const initialValue = 5;
     const map: Map = new Map(width, height, initialValue);
     expect(map.width).toBe(width);
     expect(map.height).toBe(height);

@@ -1,0 +1,25 @@
+# https://eslint.org/docs/user-guide/configuring/ignoring-code
+
+# output and non-source directories/files
+/coverage/
+/app/
+/node_modules/
+/*.local
+/.*cache
+/app/
+
+# file patterns for which we do not want to run ESLint
+# milang, 2021-11-17: we used to define ESLint ignore patterns
+# in "package.json/eslintConfig/ignorePatterns", but for consistency
+# with other build tools (".prettierignore", ".stylelintignore")
+# we moved it into its own standalone file; one advantage is that
+# we can include comments in this file, unlike "package.json"
+*.css
+*.html
+*.json
+*.lock
+*.md
+*.svg
+*.png
+*.webmanifest
+*.web
