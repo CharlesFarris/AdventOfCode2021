@@ -1,7 +1,7 @@
 import "./extensions";
 
 import { Map } from "./map";
-import { Point } from "./Point";
+import { Point } from "./point";
 
 test("map getValueAtPoint", () => {
     const map: Map = new Map(2, 2);

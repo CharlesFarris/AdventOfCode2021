@@ -6,7 +6,6 @@
 /node_modules/
 /*.local
 /.*cache
-/app/
 
 # file patterns for which we do not want to run ESLint
 # milang, 2021-11-17: we used to define ESLint ignore patterns
