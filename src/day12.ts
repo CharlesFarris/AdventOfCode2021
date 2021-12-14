@@ -124,6 +124,7 @@ function isSmallCave(node: GraphNode, ignoreStartEnd: boolean): boolean {
     return firstCharacter === firstCharacter.toLowerCase();
 }
 
+/*
 function outputGraphviz(graph: Graph): string {
     const output: string[] = [];
     output.push("strict graph {");
@@ -133,6 +134,7 @@ function outputGraphviz(graph: Graph): string {
     output.push("}");
     return output.join("\n");
 }
+*/
 
 function dayTwelvePartOne(): void {
     const graph: Graph = new Graph();
@@ -182,10 +184,12 @@ function dayTwelvePartOne(): void {
         }
     }
     console.log(`Finished Path: ${finishedPaths.length}`);
+    /*
     for (const path of finishedPaths) {
-        // console.log(path.id);
+        console.log(path.id);
     }
-    // console.log(outputGraphviz(graph));
+    console.log(outputGraphviz(graph));
+    */
 }
 
 function dayTwelvePartTwo(): void {
@@ -260,7 +264,9 @@ function dayTwelvePartTwo(): void {
         }
     }
     console.log(`Finished Path: ${finishedPaths.length}`);
+    /*
     for (const path of finishedPaths) {
-        // console.log(path.id);
+        console.log(path.id);
     }
+    */
 }
