@@ -4,7 +4,7 @@
   "main": "app/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --noEmit --pretty",
+    "build": "tsc --pretty",
     "clobber": "git -c core.longpaths=true clean -dfx",
     "compile-ts": "tsc --noEmit --pretty",
     "format": "prettier --list-different .",

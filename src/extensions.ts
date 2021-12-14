@@ -2,6 +2,7 @@
 import { Graph, GraphEdge, GraphNode } from "./graph";
 import { Map } from "./map";
 import { Point } from "./point";
+import { Range } from "./range";
 
 declare module "./point" {
     interface Point {
@@ -38,6 +39,9 @@ declare module "./map" {
         getIndexAtPoint(point: Point): number | undefined;
         toLog(): void;
         pointFromMapIndex(index: number): Point | undefined;
+        getWindow(startX: number, startY: number, endX: number, endY: number): Map;
+        flipHorizontal(): void;
+        flipVertical(): void;
     }
 }
 
@@ -78,6 +82,66 @@ Map.prototype.pointFromMapIndex = function pointFromMapIndex(index: number): Poi
     return undefined;
 };
 
+Map.prototype.getWindow = function getWindow(startX: number, startY: number, endX: number, endY: number): Map {
+    const validEndX = Math.min(this.width - 1, endX);
+    const newWidth: number = validEndX - startX + 1;
+    const validEndY = Math.min(this.height - 1, endY);
+    const newHeight: number = validEndY - startY + 1;
+    const window: Map = new Map(newWidth, newHeight);
+    for (let x = startX; x <= validEndX; x++) {
+        for (let y = startY; y <= validEndY; y++) {
+            const value = this.getValue(x, y);
+            if (value === undefined) {
+                continue;
+            }
+            window.setValue(x - startX, y - startY, value);
+        }
+    }
+    return window;
+};
+
+Map.prototype.flipHorizontal = function flipHorizontal(): void {
+    for (let y = 0; y < this.height; y++) {
+        let startX = 0;
+        let endX: number = this.width - 1;
+        while (startX < endX) {
+            const startValue = this.getValue(startX, y);
+            if (startValue === undefined) {
+                throw new Error("start undefined");
+            }
+            const endValue = this.getValue(endX, y);
+            if (endValue === undefined) {
+                throw new Error("endValue undefined");
+            }
+            this.setValue(startX, y, endValue);
+            this.setValue(endX, y, startValue);
+            startX++;
+            endX--;
+        }
+    }
+};
+
+Map.prototype.flipVertical = function flipVertical(): void {
+    for (let x = 0; x < this.width; x++) {
+        let startY = 0;
+        let endY: number = this.height - 1;
+        while (startY < endY) {
+            const startValue = this.getValue(x, startY);
+            if (startValue === undefined) {
+                throw new Error("startValue undefined");
+            }
+            const endValue = this.getValue(x, endY);
+            if (endValue === undefined) {
+                throw new Error("endValue undefined");
+            }
+            this.setValue(x, startY, endValue);
+            this.setValue(x, endY, startValue);
+            startY++;
+            endY--;
+        }
+    }
+};
+
 declare module "./graph" {
     interface Graph {
         logGraph(): void;
@@ -94,5 +158,30 @@ Graph.prototype.logGraph = function logGraph(): void {
     console.log(`Edges: ${edges.length}`);
     for (const edge of edges) {
         console.log(`${edge.start.label} - ${edge.end.label}`);
+    }
+};
+
+declare module "./range" {
+    interface Range {
+        unionValue(value: number): Range;
+        unionRange(range: Range): Range;
+    }
+}
+
+Range.prototype.unionValue = function unionValue(value: number): Range {
+    if (value < this.start) {
+        return new Range(value, this.end);
+    } else if (value > this.end) {
+        return new Range(this.start, value);
+    } else {
+        return this;
+    }
+};
+
+Range.prototype.unionRange = function unionRange(range: Range): Range {
+    if (this.start <= range.start && range.end <= this.end) {
+        return this;
+    } else {
+        return new Range(Math.min(this.start, range.start), Math.max(this.end, range.end));
     }
 };
