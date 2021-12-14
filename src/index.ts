@@ -13,7 +13,7 @@ import { dayElevenPartOne, dayElevenPartTwo } from "./day11";
 import { dayTwelvePartOne, dayTwelvePartTwo } from "./day12";
 */
 
-import { dayThirteenPartOne, dayThirteenPartTwo } from "./day-13";
+import { dayThirteenPartOne, dayThirteenPartTwo } from "./day13";
 
 /*
 // Day 1
