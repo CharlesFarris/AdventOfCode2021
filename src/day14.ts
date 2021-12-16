@@ -5,7 +5,6 @@ import { unstable_renderSubtreeIntoContainer } from "react-dom";
 
 export { dayFourteenPartOne, dayFourteenPartTwo };
 
-/*
 // Test values
 const template = "NNCB";
 const rules: string[] = [
@@ -26,8 +25,8 @@ const rules: string[] = [
     "CC -> N",
     "CN -> C"
 ];
-*/
 
+/*
 // Real values
 const template = "HBCHSNFFVOBNOFHFOBNO";
 const rules: string[] = [
@@ -132,6 +131,7 @@ const rules: string[] = [
     "OC -> V",
     "HK -> F"
 ];
+*/
 
 function dayFourteenPartOne(): void {
     const ruleMap = rules.reduce((map: Map<string, string>, rule: string) => {
@@ -195,6 +195,79 @@ function dayFourteenPartOne(): void {
     console.log(`Difference: ${(mostCommonCount - leastCommonCount).toString()}`);
 }
 
+function recurse(
+    localElementMap: Map<string, number>,
+    localRuleMap: Map<string, string>,
+    left: string,
+    right: string,
+    iteration: number,
+    maxIteration: number
+): void {
+    // console.log(`${left} ${right} ${iteration}`);
+    if (iteration === maxIteration) {
+        return;
+    }
+    const key: string = left + right;
+    const insert = localRuleMap.get(key);
+    if (insert === undefined) {
+        throw new Error("insert undefined");
+    }
+    const count = localElementMap.get(insert);
+    if (count === undefined) {
+        localElementMap.set(insert, 1);
+    } else {
+        localElementMap.set(insert, count + 1);
+    }
+    recurse(localElementMap, localRuleMap, left, insert, iteration + 1, maxIteration);
+    recurse(localElementMap, localRuleMap, insert, right, iteration + 1, maxIteration);
+}
+
 function dayFourteenPartTwo(): void {
-    // todo
+    const ruleMap = rules.reduce((map: Map<string, string>, rule: string) => {
+        const tokens = rule.split(" -> ");
+        map.set(tokens[0], tokens[1]);
+        return map;
+    }, new Map<string, string>());
+
+    const currentTemplate = template;
+    const elementMap = currentTemplate.split("").reduce((localMap: Map<string, number>, element: string) => {
+        const count = localMap.get(element);
+        if (count === undefined) {
+            localMap.set(element, 1);
+        } else {
+            localMap.set(element, count + 1);
+        }
+        return localMap;
+    }, new Map<string, number>());
+
+    const characters: string[] = currentTemplate.split("");
+    const maxIteration = 40;
+    for (let i = 0; i < characters.length - 2; i++) {
+        console.log(i);
+        recurse(elementMap, ruleMap, characters[i], characters[i + 1], 1, maxIteration);
+    }
+
+    let mostCommonElement = "";
+    let mostCommonCount = -Infinity;
+    let leastCommonElement = "";
+    let leastCommonCount = Infinity;
+    const iterator = elementMap.keys();
+    let result = iterator.next();
+    while (!result.done) {
+        const key = result.value;
+        const value = elementMap.get(key);
+        if (value === undefined) {
+            continue;
+        }
+        if (value > mostCommonCount) {
+            mostCommonCount = value;
+            mostCommonElement = key;
+        }
+        if (value < leastCommonCount) {
+            leastCommonCount = value;
+            leastCommonElement = key;
+        }
+        result = iterator.next();
+    }
+    console.log(`Difference: ${(mostCommonCount - leastCommonCount).toString()}`);
 }
