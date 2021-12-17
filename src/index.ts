@@ -15,6 +15,7 @@ import { dayThirteenPartOne, dayThirteenPartTwo } from "./day13";
 */
 
 import { daySixteenPartOne, daySixteenPartTwo } from "./day16";
+import { dayFifteenPartOne, dayFifteenPartTwo } from "./day15";
 
 /*
 // Day 1
@@ -73,3 +74,7 @@ dayThirteenPartTwo();
 // Day 16
 daySixteenPartOne();
 daySixteenPartTwo();
+
+// Day 15
+dayFifteenPartOne();
+dayFifteenPartTwo();
