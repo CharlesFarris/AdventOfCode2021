@@ -1,6 +1,6 @@
 // AoC Day 15 Challenge
 
-import { Map,mapFromLines } from "./map";
+import { Map, mapFromLines } from "./map";
 
 export { dayFifteenPartOne, dayFifteenPartTwo };
 
