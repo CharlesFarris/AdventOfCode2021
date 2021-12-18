@@ -1,6 +1,6 @@
-export { Map, mapFromLines };
+export { Map2d, mapFromLines };
 
-class Map {
+class Map2d {
     constructor(width: number, height: number, initalValue = 0) {
         this.width = width;
         this.height = height;
@@ -47,10 +47,10 @@ class Map {
     readonly values: number[];
 }
 
-function mapFromLines(lines: string[]): Map {
+function mapFromLines(lines: string[]): Map2d {
     const height: number = lines.length;
     const width: number = lines[0].length;
-    const map: Map = new Map(width, height);
+    const map: Map2d = new Map2d(width, height);
     return lines.reduce((yMap, line, y) => {
         return line.split("").reduce((xMap, character, x) => {
             map.setValue(x, y, parseInt(character));
