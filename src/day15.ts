@@ -213,7 +213,7 @@ function findShortestPath(map: Map2d): void {
                 distances[adjacentVertex.index] = distances[currentVertex.index] + risk;
             }
         }
-        console.log(`${visitedCount } ${  queue.length}`);
+        console.log(`${visitedCount} ${queue.length}`);
     }
     const endIndex = map.getIndex(map.width - 1, map.height - 1) ?? -1;
     console.log(`Lowest Risk: ${distances[endIndex]}`);
