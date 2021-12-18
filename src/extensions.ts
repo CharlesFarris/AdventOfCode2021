@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { Graph, GraphEdge, GraphNode } from "./graph";
-import { Map } from "./map";
+import { Map2d } from "./map2d";
 import { Point } from "./point";
 import { Range } from "./range";
 
@@ -30,8 +30,8 @@ Point.prototype.getAdjacentPoints = function getAdjacentPoints(includeDiagonals:
     return adjacentPoints;
 };
 
-declare module "./map" {
-    interface Map {
+declare module "./map2d" {
+    interface Map2d {
         getValueAtPoint(point: Point): number | undefined;
         setValueAtPoint(point: Point, value: number): void;
         addValueAtPoint(point: Point, value: number): void;
@@ -39,33 +39,33 @@ declare module "./map" {
         getIndexAtPoint(point: Point): number | undefined;
         toLog(): void;
         pointFromMapIndex(index: number): Point | undefined;
-        getWindow(startX: number, startY: number, endX: number, endY: number): Map;
+        getWindow(startX: number, startY: number, endX: number, endY: number): Map2d;
         flipHorizontal(): void;
         flipVertical(): void;
     }
 }
 
-Map.prototype.getValueAtPoint = function getValueAtPoint(point: Point): number | undefined {
+Map2d.prototype.getValueAtPoint = function getValueAtPoint(point: Point): number | undefined {
     return this.getValue(point.x, point.y);
 };
 
-Map.prototype.setValueAtPoint = function setValueAtPoint(point: Point, value: number) {
+Map2d.prototype.setValueAtPoint = function setValueAtPoint(point: Point, value: number) {
     this.setValue(point.x, point.y, value);
 };
 
-Map.prototype.addValueAtPoint = function addValueAtPoint(point: Point, value: number) {
+Map2d.prototype.addValueAtPoint = function addValueAtPoint(point: Point, value: number) {
     this.addValue(point.x, point.y, value);
 };
 
-Map.prototype.isPointInMap = function isPointInMap(point: Point): boolean {
+Map2d.prototype.isPointInMap = function isPointInMap(point: Point): boolean {
     return this.isInMap(point.x, point.y);
 };
 
-Map.prototype.getIndexAtPoint = function getIndexAtPoint(point: Point): number | undefined {
+Map2d.prototype.getIndexAtPoint = function getIndexAtPoint(point: Point): number | undefined {
     return this.getIndex(point.x, point.y);
 };
 
-Map.prototype.toLog = function logMap() {
+Map2d.prototype.toLog = function logMap() {
     console.log(`${this.width} x ${this.height}`);
     for (let y = 0; y < this.height; y++) {
         const start: number = y * this.width;
@@ -73,7 +73,7 @@ Map.prototype.toLog = function logMap() {
     }
 };
 
-Map.prototype.pointFromMapIndex = function pointFromMapIndex(index: number): Point | undefined {
+Map2d.prototype.pointFromMapIndex = function pointFromMapIndex(index: number): Point | undefined {
     if (0 <= index && index < this.values.length) {
         const y: number = Math.floor(index / this.width);
         const x: number = index % this.width;
@@ -82,12 +82,12 @@ Map.prototype.pointFromMapIndex = function pointFromMapIndex(index: number): Poi
     return undefined;
 };
 
-Map.prototype.getWindow = function getWindow(startX: number, startY: number, endX: number, endY: number): Map {
+Map2d.prototype.getWindow = function getWindow(startX: number, startY: number, endX: number, endY: number): Map2d {
     const validEndX = Math.min(this.width - 1, endX);
     const newWidth: number = validEndX - startX + 1;
     const validEndY = Math.min(this.height - 1, endY);
     const newHeight: number = validEndY - startY + 1;
-    const window: Map = new Map(newWidth, newHeight);
+    const window: Map2d = new Map2d(newWidth, newHeight);
     for (let x = startX; x <= validEndX; x++) {
         for (let y = startY; y <= validEndY; y++) {
             const value = this.getValue(x, y);
@@ -100,7 +100,7 @@ Map.prototype.getWindow = function getWindow(startX: number, startY: number, end
     return window;
 };
 
-Map.prototype.flipHorizontal = function flipHorizontal(): void {
+Map2d.prototype.flipHorizontal = function flipHorizontal(): void {
     for (let y = 0; y < this.height; y++) {
         let startX = 0;
         let endX: number = this.width - 1;
@@ -121,7 +121,7 @@ Map.prototype.flipHorizontal = function flipHorizontal(): void {
     }
 };
 
-Map.prototype.flipVertical = function flipVertical(): void {
+Map2d.prototype.flipVertical = function flipVertical(): void {
     for (let x = 0; x < this.width; x++) {
         let startY = 0;
         let endY: number = this.height - 1;

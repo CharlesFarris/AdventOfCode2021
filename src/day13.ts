@@ -4,7 +4,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import "./extensions";
 
-import { Map } from "./map";
+import { Map2d } from "./map2d";
 import { Point } from "./point";
 import { EmptyRange, Range } from "./range";
 
@@ -1047,7 +1047,7 @@ function dayThirteenPartOne(): void {
     const rangeY = points.reduce((range: Range, point: Point) => {
         return range.unionValue(point.y);
     }, EmptyRange);
-    let paper: Map = new Map(rangeX.end + 1, rangeY.end + 1);
+    let paper: Map2d = new Map2d(rangeX.end + 1, rangeY.end + 1);
     for (const point of points) {
         paper.setValueAtPoint(point, 1);
     }
@@ -1057,8 +1057,8 @@ function dayThirteenPartOne(): void {
         console.log(instruction);
         if (instruction.startsWith("fold along y=")) {
             const yIndex: number = parseInt(instruction.replace("fold along y=", ""));
-            const newMap: Map = paper.getWindow(0, 0, Infinity, yIndex - 1);
-            const foldMap: Map = paper.getWindow(0, yIndex + 1, Infinity, Infinity);
+            const newMap: Map2d = paper.getWindow(0, 0, Infinity, yIndex - 1);
+            const foldMap: Map2d = paper.getWindow(0, yIndex + 1, Infinity, Infinity);
             foldMap.flipVertical();
             const startY = newMap.height - foldMap.height;
             for (let x = 0; x < foldMap.width; x++) {
@@ -1075,8 +1075,8 @@ function dayThirteenPartOne(): void {
             paper = newMap;
         } else if (instruction.startsWith("fold along x=")) {
             const xIndex = parseInt(instruction.replace("fold along x=", ""));
-            const newMap: Map = paper.getWindow(0, 0, xIndex - 1, Infinity);
-            const foldMap: Map = paper.getWindow(xIndex + 1, 0, Infinity, Infinity);
+            const newMap: Map2d = paper.getWindow(0, 0, xIndex - 1, Infinity);
+            const foldMap: Map2d = paper.getWindow(xIndex + 1, 0, Infinity, Infinity);
             foldMap.flipHorizontal();
             const startX = newMap.width - foldMap.width;
             for (let y = 0; y < foldMap.height; y++) {

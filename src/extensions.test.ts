@@ -1,10 +1,10 @@
 import "./extensions";
 
-import { Map } from "./map";
+import { Map2d } from "./map2d";
 import { Point } from "./point";
 
 test("map getValueAtPoint", () => {
-    const map: Map = new Map(2, 2);
+    const map: Map2d = new Map2d(2, 2);
     map.values[0] = 1;
     map.values[1] = 2;
     map.values[2] = 3;
@@ -19,7 +19,7 @@ test("map getValueAtPoint", () => {
 });
 
 test("map setValueAtPoint", () => {
-    const map: Map = new Map(2, 2);
+    const map: Map2d = new Map2d(2, 2);
     map.setValueAtPoint(new Point(0, 0), 1);
     expect(map.getValue(0, 0)).toBe(1);
     map.setValueAtPoint(new Point(1, 0), 2);
@@ -31,7 +31,7 @@ test("map setValueAtPoint", () => {
 });
 
 test("map addValueAtPoint", () => {
-    const map: Map = new Map(2, 2, 5);
+    const map: Map2d = new Map2d(2, 2, 5);
     map.addValueAtPoint(new Point(0, 0), 1);
     expect(map.getValue(0, 0)).toBe(6);
     map.addValueAtPoint(new Point(1, 0), 2);
@@ -43,7 +43,7 @@ test("map addValueAtPoint", () => {
 });
 
 test("map isPointInMap", () => {
-    const map: Map = new Map(2, 2);
+    const map: Map2d = new Map2d(2, 2);
     // inside points
     expect(map.isPointInMap(new Point(0, 0))).toBe(true);
     expect(map.isPointInMap(new Point(1, 0))).toBe(true);
@@ -90,7 +90,7 @@ test("getAdjacentPoints", () => {
 });
 
 test("pointFromMapIndex", () => {
-    const map: Map = new Map(2, 3);
+    const map: Map2d = new Map2d(2, 3);
     const point0 = map.pointFromMapIndex(0)!;
     expect(point0.x).toBe(0);
     expect(point0.y).toBe(0);

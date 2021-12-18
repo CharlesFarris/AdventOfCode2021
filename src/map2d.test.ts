@@ -1,10 +1,10 @@
-import { Map, mapFromLines } from "./map";
+import { Map2d, mapFromLines } from "./map2d";
 
 test("map constructor", () => {
     const width = 3;
     const height = 4;
     const initialValue = 5;
-    const map: Map = new Map(width, height, initialValue);
+    const map: Map2d = new Map2d(width, height, initialValue);
     expect(map.width).toBe(width);
     expect(map.height).toBe(height);
     expect(map.values).toBeDefined();
@@ -15,7 +15,7 @@ test("map constructor", () => {
 });
 
 test("map getValue", () => {
-    const map: Map = new Map(2, 2);
+    const map: Map2d = new Map2d(2, 2);
     map.values[0] = 1;
     map.values[1] = 2;
     map.values[2] = 3;
@@ -30,7 +30,7 @@ test("map getValue", () => {
 });
 
 test("map getIndex", () => {
-    const map: Map = new Map(3, 2);
+    const map: Map2d = new Map2d(3, 2);
     // inside points
     expect(map.getIndex(0, 0)).toBe(0);
     expect(map.getIndex(1, 0)).toBe(1);
@@ -40,7 +40,7 @@ test("map getIndex", () => {
 });
 
 test("map setValue", () => {
-    const map: Map = new Map(2, 2);
+    const map: Map2d = new Map2d(2, 2);
     map.setValue(0, 0, 1);
     expect(map.getValue(0, 0)).toBe(1);
     map.setValue(1, 0, 2);
@@ -52,7 +52,7 @@ test("map setValue", () => {
 });
 
 test("map addValue", () => {
-    const map: Map = new Map(2, 2, 5);
+    const map: Map2d = new Map2d(2, 2, 5);
     map.addValue(0, 0, 1);
     expect(map.getValue(0, 0)).toBe(6);
     map.addValue(1, 0, 2);
@@ -64,7 +64,7 @@ test("map addValue", () => {
 });
 
 test("map isInMap", () => {
-    const map: Map = new Map(2, 2);
+    const map: Map2d = new Map2d(2, 2);
     // inside points
     expect(map.isInMap(0, 0)).toBe(true);
     expect(map.isInMap(1, 0)).toBe(true);
@@ -78,7 +78,7 @@ test("map isInMap", () => {
 });
 
 test("map clear", () => {
-    const map: Map = new Map(2, 2);
+    const map: Map2d = new Map2d(2, 2);
     for (const value of map.values) {
         expect(value).toBe(0);
     }
@@ -90,7 +90,7 @@ test("map clear", () => {
 
 test("mapFromLines", () => {
     const lines: string[] = ["12", "34", "56"];
-    const map: Map = mapFromLines(lines);
+    const map: Map2d = mapFromLines(lines);
     expect(map.width).toBe(2);
     expect(map.height).toBe(3);
     expect(map.values[0]).toBe(1);

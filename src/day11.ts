@@ -4,7 +4,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import "./extensions";
 
-import { Map, mapFromLines } from "./map";
+import { Map2d, mapFromLines } from "./map2d";
 import { Point } from "./point";
 
 /*
@@ -39,14 +39,14 @@ const initialValues: string[] = [
 
 export { dayElevenPartOne, dayElevenPartTwo };
 
-function getFlashIndex(map: Map, flashed: number[]): number {
+function getFlashIndex(map: Map2d, flashed: number[]): number {
     return map.values.findIndex((value: number, index: number) => {
         return value > 9 && flashed.indexOf(index) === -1;
     });
 }
 
 function dayElevenPartOne(): void {
-    const energyLevelMap: Map = mapFromLines(initialValues);
+    const energyLevelMap: Map2d = mapFromLines(initialValues);
     energyLevelMap.toLog();
     let flashCount = 0;
     for (let step = 0; step < 100; step++) {
@@ -86,7 +86,7 @@ function dayElevenPartOne(): void {
 }
 
 function dayElevenPartTwo(): void {
-    const energyLevelMap: Map = mapFromLines(initialValues);
+    const energyLevelMap: Map2d = mapFromLines(initialValues);
     energyLevelMap.toLog();
     let step = 0;
     // eslint-disable-next-line no-constant-condition
