@@ -82,5 +82,5 @@ daySixteenPartTwo();
 */
 
 // Day 17
-daySeventeenPartOne();
+// daySeventeenPartOne();
 daySeventeenPartTwo();
