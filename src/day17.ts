@@ -6,135 +6,42 @@ import { Range } from "./range";
 export { daySeventeenPartOne, daySeventeenPartTwo };
 
 // Test values
-const line = "target area: x=20..30, y=-10..-5";
+// const line = "target area: x=20..30, y=-10..-5";
 
 // Real values
-// const line : string = "target area: x=94..151, y=-156..-103";
+const line  = "target area: x=94..151, y=-156..-103";
 
-function updateVelocityX(velocity: number): number {
-    if (velocity > 0) {
-        velocity--;
-    } else if (velocity < 0) {
-        velocity++;
-    }
-    return velocity;
+class SimulationResult {
+    constructor(
+        readonly isSuccess: boolean,
+        readonly velocity: number,
+        readonly time: number,
+        readonly maxPosition: number
+    ) {}
 }
 
-function updateVelocityY(velocity: number): number {
-    velocity--;
-    return velocity;
-}
-
-function findTimeRangeX(startX: number, rangeX: Range, maxTime: number): PossibleVelocity[] {
-    for (let vX = -1000; vX < 1000; vX++) {
-        const aX = -Math.sign(vX);
-        console.log(vX);
-        const result1 = quadraticEquation(0.5 * aX, vX, startX - rangeX.start);
-        console.log(`${result1.isReal} ${result1.root1} ${result1.root2}`);
-
-        const result2 = quadraticEquation(0.5 * aX, vX, startX - rangeX.end);
-        console.log(`${result1.isReal} ${result2.root1} ${result2.root2}`);
-
-        const zeroVelocityTime = -vX / aX;
-        console.log(zeroVelocityTime);
-    }
-
-    /*
+function runSimulation(
+    startPosition: number,
+    startVelocity: number,
+    acceleration: number,
+    targetRange: Range,
+    updateVelocity: (time: number, velocity: number, acceleration: number) => number,
+    stopCondition: (time: number, position: number, velocity: number, range: Range) => boolean
+): SimulationResult {
+    let position = startPosition;
+    let maxPosition = startPosition;
+    let velocity = startVelocity;
     let time = 0;
-    console.log(`${time} x: ${x} vX: ${velocityX}`);
-    while (time < maxTime) {
-        x += velocityX;
-        velocityX = updateVelocityX(velocityX);
+    while (!stopCondition(time, position, velocity, targetRange)) {
+        position += velocity;
+        maxPosition = Math.max(maxPosition, position);
+        velocity = updateVelocity(time, velocity, acceleration);
         time++;
-        console.log(`${time} x: ${x} vX: ${velocityX}`);
-        if (velocityX === 0 && !rangeX.contains(x)) {
-            break;
-        }
     }
-    */
-    return [];
-}
-
-function findTimeRangeY(startY: number, rangeY: Range, maxTime: number): PossibleVelocity[] {
-    const possibleVelocities: PossibleVelocity[] = [];
-    const aY = -1;
-    for (let vY = -1000; vY < 1000; vY++) {
-        console.log(vY);
-        const result1 = quadraticEquation(0.5 * aY, vY, startY - rangeY.start);
-        const result2 = quadraticEquation(0.5 * aY, vY, startY - rangeY.end);
-        if (result1.isReal && result2.isReal) {
-            console.log(`${result1.isReal} ${result1.root1} ${result1.root2}`);
-            console.log(`${result2.isReal} ${result2.root1} ${result2.root2}`);
-            let isFailure = true;
-            let startTime = 0;
-            if (result1.root1 > 0 && result1.root2 > 0) {
-                throw new Error("two positive roots");
-            } else if (result1.root1 > 0) {
-                startTime = Math.ceil(result1.root1);
-            } else if (result1.root2 > 0) {
-                startTime = Math.ceil(result1.root2);
-                isFailure = false;
-            }
-            let endTime = -1;
-            if (result2.root1 > 0 && result2.root2 > 0) {
-                throw new Error("two positive roots");
-            } else if (result2.root1 > 0) {
-                endTime = Math.floor(result2.root1);
-                isFailure = false;
-            } else if (result2.root2 > 0) {
-                endTime = Math.floor(result2.root2);
-                isFailure = false;
-            }
-            if (!isFailure) {
-                const y1 = startY + vY * startTime + 0.5 * aY * (startTime * startTime);
-                const y2 = startY + vY * endTime + 0.5 * aY * (endTime * endTime);
-                if (rangeY.contains(y1) || rangeY.contains(y2)) {
-                    possibleVelocities.push(new PossibleVelocity(vY, startTime, endTime));
-                }
-            }
-        } else if (result1.isReal) {
-            throw new Error("one real root");
-        } else if (result2.isReal) {
-            throw new Error("one real root");
-        }
+    if (targetRange.contains(position)) {
+        return new SimulationResult(true, startVelocity, time, maxPosition);
     }
-    return possibleVelocities;
-}
-
-function findMaxHeight(startY: number, startVelocityY: number, rangeY: Range, maxTime: number): number {
-    let time = 0;
-    let y = startY;
-    let velocityY = startVelocityY;
-    const accelerationY = -1;
-    let maxY = startY;
-    while (time < maxTime) {
-        y += velocityY;
-        maxY = Math.max(y, maxY);
-        velocityY += accelerationY;
-        time++;
-        console.log(`${time} ${y}`);
-    }
-    return maxY;
-}
-
-class QuadraticResult {
-    constructor(readonly isReal: boolean, readonly root1: number, readonly root2: number) {}
-}
-
-class PossibleVelocity {
-    constructor(velocity: number, realTime1: number, realTime2: number) {
-        this.velocity = velocity;
-        this.timeRange = new Range(realTime1, realTime2);
-    }
-    readonly velocity: number;
-    readonly timeRange: Range;
-}
-
-function quadraticEquation(a: number, b: number, c: number): QuadraticResult {
-    const discriminant = b * b - 4 * a * c;
-    return discriminant < 0
-        ? new QuadraticResult(false, -1, -1)
-        : new QuadraticResult(true, (-b + Math.sqrt(discriminant)) / (2 * a), (-b - Math.sqrt(discriminant)) / (2 * a));
+    return new SimulationResult(false, Infinity, Infinity, -Infinity);
 }
 
 function daySeventeenPartOne(): void {
@@ -146,23 +53,71 @@ function daySeventeenPartOne(): void {
     const tokensY = tokens[1].split("..");
     const rangeY = new Range(parseInt(tokensY[0]), parseInt(tokensY[1]));
 
-    const maxTime = 10000;
-
-    const possibleVelocities = findTimeRangeY(0, rangeY, maxTime);
-    let maxY = 0;
-    for (const possibleVelocity of possibleVelocities) {
-        maxY = Math.max(
-            maxY,
-            findMaxHeight(
-                0,
-                possibleVelocity.velocity,
-                rangeY,
-                Math.max(possibleVelocity.timeRange.start, possibleVelocity.timeRange.end)
-            )
+    const resultsY: SimulationResult[] = [];
+    for (let velocityY = -100; velocityY < 1000; velocityY++) {
+        const accelerationY = -1;
+        const startY = 0;
+        const result = runSimulation(
+            startY,
+            velocityY,
+            accelerationY,
+            rangeY,
+            (time, velocity, acceleration) => {
+                return velocity + acceleration;
+            },
+            (time, position, velocity, range) => {
+                if (range.contains(position)) {
+                    return true;
+                }
+                if (time > 5000) {
+                    return true;
+                }
+                if (velocityY < 0 && position < range.start) {
+                    return true;
+                }
+                return false;
+            }
         );
+        if (result.isSuccess) {
+            resultsY.push(result);
+        }
     }
-
-    console.log(maxY);
+    resultsY.sort((a, b) => {
+        return b.maxPosition - a.maxPosition;
+    });
+    for (const resultY of resultsY) {
+        const resultsX: SimulationResult[] = [];
+        for (let velocityX = -10; velocityX < 1000; velocityX++) {
+            const accelerationX = -Math.sign(velocityX);
+            const startX = 0;
+            const result = runSimulation(
+                startX,
+                velocityX,
+                accelerationX,
+                rangeX,
+                (time, velocity, acceleration) => {
+                    return velocity === 0 ? velocity : velocity + acceleration;
+                },
+                (time, position, velocity, range) => {
+                    if (time >= resultY.time) {
+                        return true;
+                    }
+                    if (velocity === 0 && !range.contains(position)) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+            if (result.isSuccess) {
+                resultsX.push(result);
+                break;
+            }
+        }
+        if (resultsX.length > 0) {
+            console.log(`Max Height: ${resultY.maxPosition}`);
+            break;
+        }
+    }
 }
 
 function daySeventeenPartTwo(): void {
