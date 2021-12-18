@@ -148,8 +148,7 @@ class Vertex {
     constructor(readonly index: number, readonly point: Point) {}
 }
 
-function dayFifteenPartOne(): void {
-    const map: Map2d = mapFromLines(lines);
+function findShortestPath(map: Map2d): void {
     const vertices: Map<number, Vertex> = new Map<number, Vertex>();
     const distances: number[] = [];
     const visited: boolean[] = [];
@@ -214,80 +213,40 @@ function dayFifteenPartOne(): void {
                 distances[adjacentVertex.index] = distances[currentVertex.index] + risk;
             }
         }
+        console.log(`${visitedCount } ${  queue.length}`);
     }
     const endIndex = map.getIndex(map.width - 1, map.height - 1) ?? -1;
     console.log(`Lowest Risk: ${distances[endIndex]}`);
 }
 
+function dayFifteenPartOne(): void {
+    // const map: Map2d = mapFromLines(lines);
+    // findShortestPath(map);
+}
+
 function dayFifteenPartTwo(): void {
     const tile: Map2d = mapFromLines(lines);
+    tile.toLog();
 
-    const map: Map2d = new Map2d(1, 1);
-    const vertices: Map<number, Vertex> = new Map<number, Vertex>();
-    const distances: number[] = [];
-    const visited: boolean[] = [];
-    const queue: Vertex[] = [];
-    for (let y = 0; y < map.height; y++) {
-        for (let x = 0; x < map.width; x++) {
-            const point: Point = new Point(x, y);
-            const index = map.getIndexAtPoint(point);
-            if (index === undefined) {
-                throw new Error("index undefined");
-            }
-            const vertex = new Vertex(index, point);
-            vertices.set(vertex.index, vertex);
-            distances.push(x === 0 && y === 0 ? 0 : Infinity);
-            visited.push(false);
-            queue.push(vertex);
-        }
-    }
-    const adjacentVertices: Map<number, Vertex[]> = new Map<number, Vertex[]>();
-    vertices.forEach((vertex: Vertex, index: number) => {
-        const adjacentIndices = getAdjacentIndicesOnMap(vertex.point, map, false);
-        adjacentVertices.set(
-            vertex.index,
-            adjacentIndices.map((localIndex: number) => {
-                const adjacentVertex = vertices.get(localIndex);
-                if (adjacentVertex === undefined) {
-                    throw new Error("adjacentVertex undefined");
+    const map: Map2d = new Map2d(tile.width * 5, tile.height * 5);
+    for (let tileY = 0; tileY < 5; tileY++) {
+        for (let tileX = 0; tileX < 5; tileX++) {
+            for (let y = 0; y < tile.height; y++) {
+                for (let x = 0; x < tile.width; x++) {
+                    let value = tile.getValue(x, y);
+                    if (value === undefined) {
+                        throw new Error("value undefined");
+                    }
+                    value += tileX + tileY;
+                    while (value > 9) {
+                        value -= 9;
+                    }
+                    map.setValue(x + tileX * tile.width, y + tileY * tile.height, value);
                 }
-                return adjacentVertex;
-            })
-        );
-    });
-    let visitedCount = 0;
-    while (visitedCount < queue.length) {
-        let currentDistance = Infinity;
-        let currentVertex: Vertex | undefined;
-        for (const vertex of queue) {
-            if (visited[vertex.index]) {
-                continue;
-            }
-            const distance = distances[vertex.index];
-            if (distance < currentDistance) {
-                currentDistance = distance;
-                currentVertex = vertex;
-            }
-        }
-        if (currentVertex === undefined) {
-            throw new Error("currentVertex undefined");
-        }
-        visited[currentVertex.index] = true;
-        visitedCount++;
-        const adjacent = adjacentVertices.get(currentVertex.index);
-        if (adjacent === undefined) {
-            throw new Error("adjacentIndices undefined");
-        }
-        for (const adjacentVertex of adjacent) {
-            const risk = map.getValueAtPoint(adjacentVertex.point);
-            if (risk === undefined) {
-                throw new Error("risk undefined");
-            }
-            if (distances[currentVertex.index] + risk < distances[adjacentVertex.index]) {
-                distances[adjacentVertex.index] = distances[currentVertex.index] + risk;
             }
         }
     }
-    const endIndex = map.getIndex(map.width - 1, map.height - 1) ?? -1;
-    console.log(`Lowest Risk: ${distances[endIndex]}`);
+    map.toLog();
+
+    findShortestPath(map);
 }
