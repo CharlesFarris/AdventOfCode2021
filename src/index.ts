@@ -85,11 +85,11 @@ dayFifteenPartTwo();
 // Day 16
 daySixteenPartOne();
 daySixteenPartTwo();
-*/
 
 // Day 17
 daySeventeenPartOne();
 daySeventeenPartTwo();
+*/
 
 // Day 14
 dayFourteenPartOne();
