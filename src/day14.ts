@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 // AoC Day 14 Challenge
 
+import { catchClause } from "@babel/types";
 import { unstable_renderSubtreeIntoContainer } from "react-dom";
 
 export { dayFourteenPartOne, dayFourteenPartTwo };
@@ -195,31 +196,14 @@ function dayFourteenPartOne(): void {
     console.log(`Difference: ${(mostCommonCount - leastCommonCount).toString()}`);
 }
 
-function recurse(
-    localElementMap: Map<string, number>,
-    localRuleMap: Map<string, string>,
-    left: string,
-    right: string,
-    iteration: number,
-    maxIteration: number
-): void {
-    // console.log(`${left} ${right} ${iteration}`);
-    if (iteration === maxIteration) {
-        return;
+class Node {
+    constructor(left: string, right: string, iteration: number) {
+        this.key = left + right;
+        this.iteration = iteration;
     }
-    const key: string = left + right;
-    const insert = localRuleMap.get(key);
-    if (insert === undefined) {
-        throw new Error("insert undefined");
-    }
-    const count = localElementMap.get(insert);
-    if (count === undefined) {
-        localElementMap.set(insert, 1);
-    } else {
-        localElementMap.set(insert, count + 1);
-    }
-    recurse(localElementMap, localRuleMap, left, insert, iteration + 1, maxIteration);
-    recurse(localElementMap, localRuleMap, insert, right, iteration + 1, maxIteration);
+
+    readonly key: string;
+    readonly iteration: number;
 }
 
 function dayFourteenPartTwo(): void {
@@ -243,8 +227,52 @@ function dayFourteenPartTwo(): void {
     const characters: string[] = currentTemplate.split("");
     const maxIteration = 40;
     for (let i = 0; i < characters.length - 2; i++) {
-        console.log(i);
-        recurse(elementMap, ruleMap, characters[i], characters[i + 1], 1, maxIteration);
+        const stack: Node[] = [new Node(characters[i], characters[i + 1], 0)];
+        while (stack.length > 0) {
+            const current = stack.pop();
+            if (current === undefined) {
+                throw new Error("current undefied");
+            }
+            if (current.iteration === maxIteration){
+                continue;
+            }
+            const insert = ruleMap.get(current.key);
+            if (insert === undefined) {
+                throw new Error("insert undefined");
+            }
+            const count = elementMap.get(insert);
+            if (count === undefined) {
+                elementMap.set(insert, 1);
+            } else {
+                elementMap.set(insert, count + 1);
+            }
+            stack.push(new Node(insert, current.key[1], current.iteration + 1));
+            stack.push(new Node(current.key[0], insert, current.iteration + 1));
+            console.log(stack.length);
+
+            /*
+            const left = stack.pop();
+            if (left === undefined) {
+                throw new Error("left undefined");
+            }
+            let right = stack[stack.length - 1];
+            while (right.iteration < maxIteration) {
+                const key = left.character + right.character;
+                const insert = ruleMap.get(key);
+                if (insert === undefined) {
+                    throw new Error("insert undefined");
+                }
+                const count = elementMap.get(insert);
+                if (count === undefined) {
+                    elementMap.set(insert, 1);
+                } else {
+                    elementMap.set(insert, count + 1);
+                }
+                right = new Letter(insert, right.iteration + 1);
+                stack.push(right);
+            }
+            */
+        }
     }
 
     let mostCommonElement = "";
