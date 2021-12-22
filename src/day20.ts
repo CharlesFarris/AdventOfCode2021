@@ -204,5 +204,56 @@ function dayTwentyPartOne(): void {
 }
 
 function dayTwentyPartTwo(): void {
-    // todo
+    const algorithm: number[] = algorithmString.split("").map((value: string) => {
+        return value === "." ? 0 : 1;
+    });
+    const originalImage: Map2d = mapFromLines(
+        lines.map((line: string) => {
+            return line
+                .split("")
+                .map((character: string) => {
+                    return character === "." ? "0" : "1";
+                })
+                .join("");
+        })
+    );
+
+    let target = originalImage;
+    const border = 1;
+    const getInitialValue = function (localPass: number): number {
+        return localPass % 2 === 0 ? 0 : 1;
+    };
+
+    for (let pass = 0; pass < 50; pass++) {
+        const source = expandMap2d(
+            target,
+            () => {
+                return getInitialValue(pass);
+            },
+            getInitialValue(pass),
+            border
+        );
+        source.toLog();
+        target = new Map2d(
+            source.width,
+            source.height,
+            () => {
+                return getInitialValue(pass + 1);
+            },
+            getInitialValue(pass + 1)
+        );
+        for (let y = 0; y < source.height; y++) {
+            for (let x = 0; x < source.width; x++) {
+                const index = computeAlgorithmIndex(source, x, y);
+                target.setValue(x, y, algorithm[index]);
+            }
+        }
+        target.toLog();
+    }
+
+    console.log(
+        `Count: ${target.values.reduce((count: number, value: number) => {
+            return count + (value > 0 ? 1 : 0);
+        }, 0)}`
+    );
 }
