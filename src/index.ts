@@ -15,9 +15,10 @@ import { dayThirteenPartOne, dayThirteenPartTwo } from "./day13";
 import { dayFifteenPartOne, dayFifteenPartTwo } from "./day15";
 import { daySixteenPartOne, daySixteenPartTwo } from "./day16";
 import { daySeventeenPartOne, daySeventeenPartTwo } from "./day17";
+import { dayEighteenPartOne, dayEighteenPartTwo } from "./day18";
 */
 
-import { dayEighteenPartOne, dayEighteenPartTwo } from "./day18";
+import { dayTwentyPartOne, dayTwentyPartTwo } from "./day20";
 
 /*
 // Day 1
@@ -83,8 +84,12 @@ daySixteenPartTwo();
 // Day 17
 daySeventeenPartOne();
 daySeventeenPartTwo();
-*/
 
 // Day 18
 dayEighteenPartOne();
 dayEighteenPartTwo();
+*/
+
+// Day 20
+dayTwentyPartOne();
+dayTwentyPartTwo();
