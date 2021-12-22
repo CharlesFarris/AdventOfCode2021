@@ -4,7 +4,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import "./extensions";
 
-import { Map2d, mapFromLines } from "./map2d";
+import { createMap2d, Map2d, mapFromLines } from "./map2d";
 import { Point } from "./point";
 
 export { dayFifteenPartOne, dayFifteenPartTwo };
@@ -228,7 +228,7 @@ function dayFifteenPartTwo(): void {
     const tile: Map2d = mapFromLines(lines);
     tile.toLog();
 
-    const map: Map2d = new Map2d(tile.width * 5, tile.height * 5);
+    const map: Map2d = createMap2d(tile.width * 5, tile.height * 5);
     for (let tileY = 0; tileY < 5; tileY++) {
         for (let tileX = 0; tileX < 5; tileX++) {
             for (let y = 0; y < tile.height; y++) {

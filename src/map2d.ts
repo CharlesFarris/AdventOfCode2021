@@ -1,10 +1,11 @@
-export { Map2d, mapFromLines };
+export { createMap2d, Map2d, mapFromLines };
 
 class Map2d {
-    constructor(width: number, height: number, initalValue = 0) {
+    constructor(width: number, height: number, getOutValue: () => number | undefined, initalValue = 0) {
         this.width = width;
         this.height = height;
         this.values = new Array(width * height).fill(initalValue);
+        this.getOutValue = getOutValue;
     }
 
     getIndex(x: number, y: number): number | undefined {
@@ -13,7 +14,7 @@ class Map2d {
 
     getValue(x: number, y: number): number | undefined {
         const index = this.getIndex(x, y);
-        return index === undefined ? undefined : this.values[index];
+        return index === undefined ? this.getOutValue() : this.values[index];
     }
 
     setValue(x: number, y: number, value: number): void {
@@ -45,16 +46,28 @@ class Map2d {
     readonly width: number;
     readonly height: number;
     readonly values: number[];
+    readonly getOutValue: () => number | undefined;
 }
 
 function mapFromLines(lines: string[]): Map2d {
     const height: number = lines.length;
     const width: number = lines[0].length;
-    const map: Map2d = new Map2d(width, height);
+    const map: Map2d = createMap2d(width, height);
     return lines.reduce((yMap, line, y) => {
         return line.split("").reduce((xMap, character, x) => {
             map.setValue(x, y, parseInt(character));
             return xMap;
         }, yMap);
     }, map);
+}
+
+function createMap2d(width: number, height: number, initialValue = 0): Map2d {
+    return new Map2d(
+        width,
+        height,
+        () => {
+            return undefined;
+        },
+        initialValue
+    );
 }

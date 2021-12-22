@@ -4,7 +4,14 @@ test("map constructor", () => {
     const width = 3;
     const height = 4;
     const initialValue = 5;
-    const map: Map2d = new Map2d(width, height, initialValue);
+    const map: Map2d = new Map2d(
+        width,
+        height,
+        () => {
+            return undefined;
+        },
+        initialValue
+    );
     expect(map.width).toBe(width);
     expect(map.height).toBe(height);
     expect(map.values).toBeDefined();
@@ -15,7 +22,9 @@ test("map constructor", () => {
 });
 
 test("map getValue", () => {
-    const map: Map2d = new Map2d(2, 2);
+    const map: Map2d = new Map2d(2, 2, () => {
+        return undefined;
+    });
     map.values[0] = 1;
     map.values[1] = 2;
     map.values[2] = 3;
@@ -30,7 +39,9 @@ test("map getValue", () => {
 });
 
 test("map getIndex", () => {
-    const map: Map2d = new Map2d(3, 2);
+    const map: Map2d = new Map2d(3, 2, () => {
+        return undefined;
+    });
     // inside points
     expect(map.getIndex(0, 0)).toBe(0);
     expect(map.getIndex(1, 0)).toBe(1);
@@ -40,7 +51,9 @@ test("map getIndex", () => {
 });
 
 test("map setValue", () => {
-    const map: Map2d = new Map2d(2, 2);
+    const map: Map2d = new Map2d(2, 2, () => {
+        return undefined;
+    });
     map.setValue(0, 0, 1);
     expect(map.getValue(0, 0)).toBe(1);
     map.setValue(1, 0, 2);
@@ -52,7 +65,14 @@ test("map setValue", () => {
 });
 
 test("map addValue", () => {
-    const map: Map2d = new Map2d(2, 2, 5);
+    const map: Map2d = new Map2d(
+        2,
+        2,
+        () => {
+            return undefined;
+        },
+        5
+    );
     map.addValue(0, 0, 1);
     expect(map.getValue(0, 0)).toBe(6);
     map.addValue(1, 0, 2);
@@ -64,7 +84,9 @@ test("map addValue", () => {
 });
 
 test("map isInMap", () => {
-    const map: Map2d = new Map2d(2, 2);
+    const map: Map2d = new Map2d(2, 2, () => {
+        return undefined;
+    });
     // inside points
     expect(map.isInMap(0, 0)).toBe(true);
     expect(map.isInMap(1, 0)).toBe(true);
@@ -78,7 +100,9 @@ test("map isInMap", () => {
 });
 
 test("map clear", () => {
-    const map: Map2d = new Map2d(2, 2);
+    const map: Map2d = new Map2d(2, 2, () => {
+        return undefined;
+    });
     for (const value of map.values) {
         expect(value).toBe(0);
     }
