@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 // AoC Day 14 Challenge
 
-import { catchClause } from "@babel/types";
 import { unstable_renderSubtreeIntoContainer } from "react-dom";
 
 export { dayFourteenPartOne, dayFourteenPartTwo };
@@ -233,7 +232,7 @@ function dayFourteenPartTwo(): void {
             if (current === undefined) {
                 throw new Error("current undefied");
             }
-            if (current.iteration === maxIteration){
+            if (current.iteration === maxIteration) {
                 continue;
             }
             const insert = ruleMap.get(current.key);
