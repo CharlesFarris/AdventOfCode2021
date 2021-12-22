@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { Graph, GraphEdge, GraphNode } from "./graph";
-import { Map2d } from "./map2d";
+import { createMap2d, Map2d } from "./map2d";
 import { Point } from "./point";
 import { Range } from "./range";
 
@@ -87,7 +87,7 @@ Map2d.prototype.getWindow = function getWindow(startX: number, startY: number, e
     const newWidth: number = validEndX - startX + 1;
     const validEndY = Math.min(this.height - 1, endY);
     const newHeight: number = validEndY - startY + 1;
-    const window: Map2d = new Map2d(newWidth, newHeight);
+    const window: Map2d = createMap2d(newWidth, newHeight);
     for (let x = startX; x <= validEndX; x++) {
         for (let y = startY; y <= validEndY; y++) {
             const value = this.getValue(x, y);

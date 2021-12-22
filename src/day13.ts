@@ -4,7 +4,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import "./extensions";
 
-import { Map2d } from "./map2d";
+import { createMap2d, Map2d } from "./map2d";
 import { Point } from "./point";
 import { EmptyRange, Range } from "./range";
 
@@ -1047,7 +1047,7 @@ function dayThirteenPartOne(): void {
     const rangeY = points.reduce((range: Range, point: Point) => {
         return range.unionValue(point.y);
     }, EmptyRange);
-    let paper: Map2d = new Map2d(rangeX.end + 1, rangeY.end + 1);
+    let paper: Map2d = createMap2d(rangeX.end + 1, rangeY.end + 1);
     for (const point of points) {
         paper.setValueAtPoint(point, 1);
     }
