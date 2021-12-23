@@ -19,6 +19,18 @@ class Range {
         return this.start <= value && value <= this.end;
     }
 
+    containsRange(range: Range): boolean {
+        return this.start <= range.start && range.end <= this.end;
+    }
+
+    isOverlapping(range: Range): boolean {
+        return Math.max(this.start, range.start) <= Math.min(this.end, range.end);
+    }
+
+    isAdjacent(range: Range): boolean {
+        return range.end + 1 === this.start || this.end + 1 === range.start;
+    }
+
     readonly start: number;
     readonly end: number;
 }

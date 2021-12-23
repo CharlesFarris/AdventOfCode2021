@@ -106,5 +106,5 @@ dayTwentyThreePartTwo();
 */
 
 // Day 22
-dayTwentyTwoPartOne();
+// dayTwentyTwoPartOne();
 dayTwentyTwoPartTwo();
