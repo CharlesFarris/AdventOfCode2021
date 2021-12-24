@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 // AoC Day 22 Challenge
 
-import { EmptyRange, intersection, Range, union } from "./range";
+import { Cuboid } from "./cuboid";
+import { EmptyRange, intersection, Range, split, union } from "./range";
 
 export { dayTwentyTwoPartOne, dayTwentyTwoPartTwo };
 
@@ -593,6 +594,7 @@ function executeRebootStep(region: Map3d, line: string): void {
             const tokens = token.split("..");
             return new Range(parseInt(tokens[0]), parseInt(tokens[1]));
         });
+    /*
     const resultX = intersection(region.rangeX, ranges[0]);
     if (resultX.status) {
         const resultY = intersection(region.rangeY, ranges[1]);
@@ -609,142 +611,7 @@ function executeRebootStep(region: Map3d, line: string): void {
             }
         }
     }
-}
-
-class Line {
-    constructor(readonly y: number) {
-        this.ranges = [];
-    }
-
-    add(rangeX: Range): void {
-        this.ranges.push(rangeX);
-        this.consolidate();
-    }
-
-    consolidate(): void {
-        this.ranges.sort((a, b) => {
-            return a.start - b.start;
-        });
-        const stack = this.ranges.slice().reverse();
-        this.ranges = [];
-        while (stack.length > 0) {
-            let current = stack.pop();
-            if (current === undefined) {
-                throw new Error("current undefined");
-            }
-            while (stack.length > 0) {
-                const next = stack.pop();
-                if (next === undefined) {
-                    throw new Error("next undefined");
-                }
-                if (current.isOverlapping(next) || current.isAdjacent(next)) {
-                    current = union(current, next);
-                } else {
-                    this.ranges.push(current);
-                    stack.push(next);
-                    break;
-                }
-            }
-        }
-    }
-
-    subtract(rangeX: Range): void {
-        if (this.isEmpty()) {
-            return;
-        }
-    }
-
-    isEmpty(): boolean {
-        return this.ranges.length === 0;
-    }
-
-    getFirstRange(): Range {
-        return this.ranges[0];
-    }
-
-    getLastRange(): Range {
-        return this.ranges[this.ranges.length - 1];
-    }
-
-    getRange(): Range | undefined {
-        return this.isEmpty() ? undefined : new Range(this.ranges[0].start, this.ranges[this.ranges.length - 1].end);
-    }
-
-    private ranges: Range[];
-}
-
-class Region {
-    constructor(readonly z: number) {
-        this.lines = new Map<number, Line>();
-    }
-
-    isEmpty(): boolean {
-        return this.lines.size === 0;
-    }
-
-    add(rangeX: Range, rangeY: Range): void {
-        for (let y = rangeY.start; y <= rangeY.end; y++) {
-            let line = this.lines.get(y);
-            if (line === undefined) {
-                line = new Line(y);
-                this.lines.set(y, line);
-            }
-            line.add(rangeX);
-        }
-    }
-
-    subtract(rangeX: Range, rangeY: Range): void {
-        for (let y = rangeY.start; y <= rangeY.end; y++) {
-            const line = this.lines.get(y);
-            if (line === undefined) {
-                continue;
-            }
-            line.subtract(rangeX);
-        }
-    }
-
-    consolidate(): void {
-        this.lines.forEach((line: Line) => {
-            line.consolidate();
-        });
-    }
-
-    private readonly lines: Map<number, Line>;
-}
-
-class Space {
-    constructor() {
-        this.regions = new Map<number, Region>();
-    }
-
-    add(rangeX: Range, rangeY: Range, rangeZ: Range): void {
-        for (let z = rangeZ.start; z <= rangeZ.end; z++) {
-            let region = this.regions.get(z);
-            if (region === undefined) {
-                region = new Region(z);
-                this.regions.set(z, region);
-            }
-            region.add(rangeX, rangeY);
-        }
-    }
-
-    subtract(rangeX: Range, rangeY: Range, rangeZ: Range): void {
-        for (let z = rangeZ.start; z <= rangeZ.end; z++) {
-            const region = this.regions.get(z);
-            if (region === undefined) {
-                continue;
-            }
-            region.subtract(rangeX, rangeY);
-        }
-    }
-
-    consolidate(): void {
-        this.regions.forEach((region: Region) => {
-            region.consolidate();
-        });
-    }
-
-    private readonly regions: Map<number, Region>;
+    */
 }
 
 function dayTwentyTwoPartOne(): void {
@@ -759,11 +626,95 @@ function dayTwentyTwoPartOne(): void {
     console.log(`Count: ${count}`);
 }
 
+function intersect(left: Cuboid, right: Cuboid): Cuboid | undefined {
+    const intersectX = intersection(left.rangeX, right.rangeX);
+    if (intersectX === undefined) {
+        return undefined;
+    }
+    const intersectY = intersection(left.rangeY, right.rangeY);
+    if (intersectY === undefined) {
+        return undefined;
+    }
+    const intersectZ = intersection(left.rangeZ, right.rangeZ);
+    if (intersectZ === undefined) {
+        return undefined;
+    }
+    return new Cuboid(intersectX, intersectY, intersectZ);
+}
+
+function splitX(cuboids: Cuboid[], x: number): Cuboid[] {
+    const output: Cuboid[] = [];
+    for (const cuboid of cuboids) {
+        const ranges = split(cuboid.rangeX, x);
+        if (ranges.length === 1) {
+            output.push(cuboid);
+        } else {
+            output.push(new Cuboid(ranges[0], cuboid.rangeY, cuboid.rangeZ));
+            output.push(new Cuboid(ranges[1], cuboid.rangeY, cuboid.rangeZ));
+        }
+    }
+    return output;
+}
+
+function splitY(cuboids: Cuboid[], y: number): Cuboid[] {
+    const output: Cuboid[] = [];
+    for (const cuboid of cuboids) {
+        const ranges = split(cuboid.rangeY, y);
+        if (ranges.length === 1) {
+            output.push(cuboid);
+        } else {
+            output.push(new Cuboid(cuboid.rangeX, ranges[0], cuboid.rangeZ));
+            output.push(new Cuboid(cuboid.rangeX, ranges[1], cuboid.rangeZ));
+        }
+    }
+    return output;
+}
+
+function splitZ(cuboids: Cuboid[], z: number): Cuboid[] {
+    const output: Cuboid[] = [];
+    for (const cuboid of cuboids) {
+        const ranges = split(cuboid.rangeZ, z);
+        if (ranges.length === 1) {
+            output.push(cuboid);
+        } else {
+            output.push(new Cuboid(cuboid.rangeX, cuboid.rangeY, ranges[0]));
+            output.push(new Cuboid(cuboid.rangeX, cuboid.rangeY, ranges[1]));
+        }
+    }
+    return output;
+}
+
+function subtract(left: Cuboid, right: Cuboid): Cuboid[] {
+    if (right.contains(left)) {
+        return [];
+    }
+    const common = intersect(left, right);
+    if (common === undefined) {
+        return [left];
+    }
+    let output: Cuboid[] = [left];
+    output = splitX(output, common.rangeX.start);
+    output = splitX(output, common.rangeX.end);
+    output = splitY(output, common.rangeY.start);
+    output = splitY(output, common.rangeY.end);
+    output = splitZ(output, common.rangeZ.start);
+    output = splitZ(output, common.rangeZ.end);
+    const commonIndex = output.indexOf(common);
+    if (commonIndex !== -1) {
+        output.splice(commonIndex, 1);
+    }
+    return output;
+}
+
+function size(range: Range): number {
+    return range.end - range.start + 1;
+}
+
 function dayTwentyTwoPartTwo(): void {
-    const space = new Space();
+    const onCuboids: Cuboid[] = [];
     for (const step of steps) {
         if (step.startsWith("on")) {
-            console.log(step)
+            console.log(step);
             const ranges = step
                 .replace("on x=", "")
                 .replace("y=", "")
@@ -773,10 +724,10 @@ function dayTwentyTwoPartTwo(): void {
                     const tokens = token.split("..");
                     return new Range(parseInt(tokens[0]), parseInt(tokens[1]));
                 });
-            space.add(ranges[0], ranges[1], ranges[2]);
+            onCuboids.push(new Cuboid(ranges[0], ranges[1], ranges[2]));
         }
     }
-    space.consolidate();
+    const offCuboids: Cuboid[] = [];
     for (const step of steps) {
         if (step.startsWith("off")) {
             const ranges = step
@@ -788,7 +739,50 @@ function dayTwentyTwoPartTwo(): void {
                     const tokens = token.split("..");
                     return new Range(parseInt(tokens[0]), parseInt(tokens[1]));
                 });
-            space.subtract(ranges[0], ranges[1], ranges[2]);
+            offCuboids.push(new Cuboid(ranges[0], ranges[1], ranges[2]));
         }
     }
+    const subtracted: Cuboid[] = [];
+    const stack = onCuboids.slice();
+    while (stack.length > 0) {
+        const current = stack.pop();
+        if (current === undefined) {
+            throw new Error("current undefined");
+        }
+        let isSplit = false;
+        let isDeleted = false;
+        for (const offCuboid of offCuboids) {
+            const results = subtract(current, offCuboid);
+            if (results.length === 0) {
+                isDeleted = true;
+                break;
+            }
+            if (results.length > 1) {
+                results.reduce((localStack: Cuboid[], cuboid: Cuboid) => {
+                    localStack.push(cuboid);
+                    return localStack;
+                }, stack);
+                isSplit = true;
+                break;
+            }
+        }
+        if (!isSplit && !isDeleted) {
+            subtracted.push(current);
+        }
+    }
+    let volume = 0;
+    for (let i = 0; i < subtracted.length; i++) {
+        console.log(i);
+        const current = subtracted[i];
+        volume += size(current.rangeX) + size(current.rangeY) + size(current.rangeZ);
+        console.log(volume);
+        for (let j = i + 1; j < subtracted.length; j++) {
+            const overlap = intersect(current, subtracted[j]);
+            if (overlap !== undefined) {
+                volume -= size(overlap.rangeX) + size(overlap.rangeY) + size(overlap.rangeZ);
+                console.log(volume);
+            }
+        }
+    }
+    console.log(`Subtract: ${volume}`);
 }

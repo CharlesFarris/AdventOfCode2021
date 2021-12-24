@@ -1,4 +1,4 @@
-export { EmptyRange, intersection, IntersectionResult, Range, union };
+export { EmptyRange, intersection, Range, split, union };
 
 class Range {
     constructor(start: number, end: number) {
@@ -31,6 +31,10 @@ class Range {
         return range.end + 1 === this.start || this.end + 1 === range.start;
     }
 
+    canSplit(value: number): boolean {
+        return this.start < value && value < this.end;
+    }
+
     readonly start: number;
     readonly end: number;
 }
@@ -41,13 +45,15 @@ function union(left: Range, right: Range): Range {
     return new Range(Math.min(left.start, right.start), Math.max(left.end, right.end));
 }
 
-class IntersectionResult {
-    constructor(readonly status: boolean, readonly range: Range) {}
+function intersection(left: Range, right: Range): Range | undefined {
+    if (right.start > left.end || left.start > right.end) {
+        return undefined;
+    }
+    return new Range(Math.max(left.start, right.start), Math.min(left.end, right.end));
 }
 
-function intersection(left: Range, right: Range): IntersectionResult {
-    if (right.start > left.end || left.start > right.end) {
-        return new IntersectionResult(false, EmptyRange);
-    }
-    return new IntersectionResult(true, new Range(Math.max(left.start, right.start), Math.min(left.end, right.end)));
+function split(range: Range, value: number): Range[] {
+    return range.start < value && value < range.end
+        ? [new Range(range.start, value), new Range(value, range.end)]
+        : [range];
 }
