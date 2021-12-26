@@ -626,161 +626,11 @@ function dayTwentyTwoPartOne(): void {
     console.log(`Count: ${count}`);
 }
 
-function intersect(left: Cuboid, right: Cuboid): Cuboid | undefined {
-    const intersectX = left.rangeX.intersect(right.rangeX);
-    if (intersectX === undefined) {
-        return undefined;
-    }
-    const intersectY = left.rangeY.intersect(right.rangeY);
-    if (intersectY === undefined) {
-        return undefined;
-    }
-    const intersectZ = left.rangeZ.intersect(right.rangeZ);
-    if (intersectZ === undefined) {
-        return undefined;
-    }
-    return new Cuboid(intersectX, intersectY, intersectZ);
-}
-
-enum SplitDirection {
-    Positive,
-    Negative
-}
-
-function splitRange(range: Range, value: number, direction: SplitDirection): Range[] {
-    switch (direction) {
-        case SplitDirection.Positive:
-            {
-                if (value < range.start) {
-                    return [range];
-                } else if (range.end <= value) {
-                    return [range];
-                } else {
-                    return [new Range(range.start, value), new Range(value + 1, range.end)];
-                }
-            }
-            break;
-        case SplitDirection.Negative:
-            {
-                if (value <= range.start) {
-                    return [range];
-                } else if (range.end < value) {
-                    return [range];
-                } else {
-                    return [new Range(range.start, value - 1), new Range(value, range.end)];
-                }
-            }
-            break;
-        default:
-            throw new Error("direction unknown");
-    }
-}
-
-enum SplitPlane {
-    X,
-    Y,
-    Z
-}
-
-function splitCuboid(cuboid: Cuboid, value: number, plane: SplitPlane, direction: SplitDirection): Cuboid[] {
-    switch (plane) {
-        case SplitPlane.X:
-            {
-                const ranges = splitRange(cuboid.rangeX, value, direction);
-                return ranges.length === 1
-                    ? [cuboid]
-                    : [
-                          new Cuboid(ranges[0], cuboid.rangeY, cuboid.rangeZ),
-                          new Cuboid(ranges[1], cuboid.rangeY, cuboid.rangeZ)
-                      ];
-            }
-            break;
-        case SplitPlane.Y:
-            {
-                const ranges = splitRange(cuboid.rangeY, value, direction);
-                return ranges.length === 1
-                    ? [cuboid]
-                    : [
-                          new Cuboid(cuboid.rangeX, ranges[0], cuboid.rangeZ),
-                          new Cuboid(cuboid.rangeX, ranges[1], cuboid.rangeZ)
-                      ];
-            }
-            break;
-        case SplitPlane.Z:
-            {
-                const ranges = splitRange(cuboid.rangeZ, value, direction);
-                return ranges.length === 1
-                    ? [cuboid]
-                    : [
-                          new Cuboid(cuboid.rangeX, cuboid.rangeY, ranges[0]),
-                          new Cuboid(cuboid.rangeX, cuboid.rangeY, ranges[1])
-                      ];
-            }
-            break;
-        default:
-            throw new Error("plane unknown");
-    }
-}
-
-function splitCuboids(cuboids: Cuboid[], value: number, plane: SplitPlane, direction: SplitDirection): Cuboid[] {
-    const output: Cuboid[] = [];
-    for (const cuboid of cuboids) {
-        const splitOutputs = splitCuboid(cuboid, value, plane, direction);
-        for (const splitOutput of splitOutputs) {
-            output.push(splitOutput);
-        }
-    }
-    return output;
-}
-
-function matchCuboid(left: Cuboid, right: Cuboid): boolean {
-    return (
-        left.rangeX.start === right.rangeX.start &&
-        left.rangeX.end === right.rangeX.end &&
-        left.rangeY.start === right.rangeY.start &&
-        left.rangeY.end === right.rangeY.end &&
-        left.rangeZ.start === right.rangeZ.start &&
-        left.rangeZ.end === right.rangeZ.end
-    );
-}
-
-function subtract(left: Cuboid, right: Cuboid): Cuboid[] {
-    if (right.contains(left)) {
-        return [];
-    }
-    const common = intersect(left, right);
-    if (common === undefined) {
-        return [left];
-    }
-    let output: Cuboid[] = [left];
-    output = splitCuboids(output, common.rangeX.start, SplitPlane.X, SplitDirection.Negative);
-    output = splitCuboids(output, common.rangeX.end, SplitPlane.X, SplitDirection.Positive);
-    output = splitCuboids(output, common.rangeY.start, SplitPlane.Y, SplitDirection.Negative);
-    output = splitCuboids(output, common.rangeY.end, SplitPlane.Y, SplitDirection.Positive);
-    output = splitCuboids(output, common.rangeZ.start, SplitPlane.Z, SplitDirection.Negative);
-    output = splitCuboids(output, common.rangeZ.end, SplitPlane.Z, SplitDirection.Positive);
-    const commonIndex = output.findIndex((cuboid: Cuboid) => {
-        return matchCuboid(cuboid, common);
-    });
-    if (commonIndex !== -1) {
-        output.splice(commonIndex, 1);
-    }
-    return output;
-}
-
-function sizeRange(range: Range): number {
-    return range.end - range.start + 1;
-}
-
-function sizeCuboid(cuboid: Cuboid): number {
-    return sizeRange(cuboid.rangeX) * sizeRange(cuboid.rangeY) * sizeRange(cuboid.rangeZ);
-}
-
 function dayTwentyTwoPartTwo(): void {
-    const onCuboids: Cuboid[] = [];
+    let onCuboids: Cuboid[] = [];
     for (const step of steps) {
+        console.log(step);
         if (step.startsWith("on")) {
-            console.log(step);
             const ranges = step
                 .replace("on x=", "")
                 .replace("y=", "")
@@ -791,15 +641,8 @@ function dayTwentyTwoPartTwo(): void {
                     return new Range(parseInt(tokens[0]), parseInt(tokens[1]));
                 });
             onCuboids.push(new Cuboid(ranges[0], ranges[1], ranges[2]));
-        }
-    }
-    const onVolume = onCuboids.reduce((sum: number, value: Cuboid) => {
-        return sum + sizeCuboid(value);
-    }, 0);
-
-    const offCuboids: Cuboid[] = [];
-    for (const step of steps) {
-        if (step.startsWith("off")) {
+            console.log(onCuboids.length);
+        } else if (step.startsWith("off")) {
             const ranges = step
                 .replace("off x=", "")
                 .replace("y=", "")
@@ -809,51 +652,37 @@ function dayTwentyTwoPartTwo(): void {
                     const tokens = token.split("..");
                     return new Range(parseInt(tokens[0]), parseInt(tokens[1]));
                 });
-            offCuboids.push(new Cuboid(ranges[0], ranges[1], ranges[2]));
-        }
-    }
-    const subtracted: Cuboid[] = [];
-    const stack = onCuboids.slice();
-    while (stack.length > 0) {
-        const current = stack.pop();
-        if (current === undefined) {
-            throw new Error("current undefined");
-        }
-        let isSplit = false;
-        let isDeleted = false;
-        for (const offCuboid of offCuboids) {
-            const results = subtract(current, offCuboid);
-            if (results.length === 0) {
-                isDeleted = true;
-                break;
+            const offCuboid = new Cuboid(ranges[0], ranges[1], ranges[2]);
+
+            const stack = onCuboids.slice();
+            onCuboids = [];
+            while (stack.length > 0) {
+                const current = stack.pop();
+                if (current === undefined) {
+                    throw new Error("current undefined");
+                }
+                const subtracted = current.subtract(offCuboid);
+                for (const s of subtracted) {
+                    onCuboids.push(s);
+                }
             }
-            if (results.length > 1) {
-                results.reduce((localStack: Cuboid[], cuboid: Cuboid) => {
-                    localStack.push(cuboid);
-                    return localStack;
-                }, stack);
-                isSplit = true;
-                break;
-            }
-        }
-        if (!isSplit && !isDeleted) {
-            subtracted.push(current);
+            console.log(onCuboids.length);
         }
     }
 
     let volume = 0;
-    for (let i = 0; i < subtracted.length; i++) {
-        console.log(i);
-        const current = subtracted[i];
-        volume += sizeCuboid(current);
-        console.log(volume);
-        for (let j = i + 1; j < subtracted.length; j++) {
-            const overlap = intersect(current, subtracted[j]);
-            if (overlap !== undefined) {
-                volume -= sizeCuboid(overlap);
-                console.log(volume);
+    for (let i = 0; i < onCuboids.length; i++) {
+        const current = onCuboids[i];
+        volume += current.size();
+        for (let j = i + 1; j < onCuboids.length; j++) {
+            const intersection = current.intersect(onCuboids[j]);
+            if (intersection !== undefined) {
+                volume -= intersection.size();
             }
         }
     }
-    console.log(`Subtract: ${volume}`);
+    console.log(volume);
 }
+
+// 2758514936282235
+// 2143512303894736
