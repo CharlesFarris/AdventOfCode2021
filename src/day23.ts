@@ -17,76 +17,69 @@ enum BoardLocation {
     H11,
     S11,
     S12,
+    S13,
+    S14,
     S21,
     S22,
+    S23,
+    S24,
     S31,
     S32,
+    S33,
+    S34,
     S41,
-    S42
+    S42,
+    S43,
+    S44
 }
 
-const pathStrings: string[] = [
-    "h1 h2 h3 s11",
-    "h1 h2 h3 s11 s12",
-    "h1 h2 h3 h4 h5 s21",
-    "h1 h2 h3 h4 h5 s21 s22",
-    "h1 h2 h3 h4 h5 h6 h7 s31",
-    "h1 h2 h3 h4 h5 h6 h7 s31 s32",
-    "h1 h2 h3 h4 h5 h6 h7 h8 h9 s41",
-    "h1 h2 h3 h4 h5 h6 h7 h8 h9 s41 s42",
+function buildPath(start: number, end: number, paths: string[]): void {
+    let basePath = "";
+    if (end > start) {
+        for (let i = start; i <= end; i++) {
+            basePath = `${basePath}h${i.toString()} `;
+        }
+    } else {
+        for (let i = start; i >= end; i--) {
+            basePath = `${basePath}h${i.toString()} `;
+        }
+    }
+    let prefix = "";
+    switch (end) {
+        case 3:
+            prefix = "s1";
+            break;
+        case 5:
+            prefix = "s2";
+            break;
+        case 7:
+            prefix = "s3";
+            break;
+        case 9:
+            prefix = "s4";
+            break;
+    }
+    let lastPath = basePath;
+    for (let i = 1; i <= 4; i++) {
+        if (i > 1) {
+            lastPath = `${lastPath} `;
+        }
+        lastPath = lastPath + prefix + i.toString();
+        paths.push(lastPath);
+    }
+}
 
-    "h2 h3 s11",
-    "h2 h3 s11 s12",
-    "h2 h3 h4 h5 s21",
-    "h2 h3 h4 h5 s21 s22",
-    "h2 h3 h4 h5 h6 h7 s31",
-    "h2 h3 h4 h5 h6 h7 s31 s32",
-    "h2 h3 h4 h5 h6 h7 h8 h9 s41",
-    "h2 h3 h4 h5 h6 h7 h8 h9 s41 s42",
-
-    "h4 h3 s11",
-    "h4 h3 s11 s12",
-    "h4 h5 s21",
-    "h4 h5 s21 s22",
-    "h4 h5 h6 h7 s31",
-    "h4 h5 h6 h7 s31 s32",
-    "h4 h5 h6 h7 h8 h9 s41",
-    "h4 h5 h6 h7 h8 h9 s41 s42",
-
-    "h6 h5 h4 h3 s11",
-    "h6 h5 h4 h3 s11 s12",
-    "h6 h5 s21",
-    "h6 h5 s21 s22",
-    "h6 h7 s31",
-    "h6 h7 s31 s32",
-    "h6 h7 h8 h9 s41",
-    "h6 h7 h8 h9 s41 s42",
-
-    "h8 h7 h6 h5 h4 h3 s11",
-    "h8 h7 h6 h5 h4 h3 s11 s12",
-    "h8 h7 h6 h5 s21",
-    "h8 h7 h6 h5 s21 s22",
-    "h8 h7 s31",
-    "h8 h7 s31 s32",
-
-    "h10 h9 h8 h7 h6 h5 h4 h3 s11",
-    "h10 h9 h8 h7 h6 h5 h4 h3 s11 s12",
-    "h10 h9 h8 h7 h6 h5 s21",
-    "h10 h9 h8 h7 h6 h5 s21 s22",
-    "h10 h9 h8 h7 s31",
-    "h10 h9 h8 h7 s31 s32",
-    "h10 h9 s41",
-    "h10 h9 s41 s42",
-
-    "h11 h10 h9 h8 h7 h6 h5 h4 h3 s11",
-    "h11 h10 h9 h8 h7 h6 h5 h4 h3 s11 s12",
-    "h11 h10 h9 h8 h7 h6 h5 s21",
-    "h11 h10 h9 h8 h7 h6 h5 s21 s22",
-    "h11 h10 h9 h8 h7 s31",
-    "h11 h10 h9 h8 h7 s31 s32",
-    "h11 h10 h9 s41",
-    "h11 h10 h9 s41 s42"
-];
+function buildPaths(): string[] {
+    const paths: string[] = [];
+    const starts: number[] = [1, 2, 4, 6, 8, 10, 11];
+    const ends: number[] = [3, 5, 7, 9];
+    for (const start of starts) {
+        for (const end of ends) {
+            buildPath(start, end, paths);
+        }
+    }
+    return paths;
+}
 
 class Amphipod {
     constructor(readonly type: string, readonly location: BoardLocation) {}
@@ -100,12 +93,20 @@ function isAtStart(location: BoardLocation): boolean {
     switch (location) {
         case BoardLocation.S11:
         case BoardLocation.S12:
+        case BoardLocation.S13:
+        case BoardLocation.S14:
         case BoardLocation.S21:
         case BoardLocation.S22:
+        case BoardLocation.S23:
+        case BoardLocation.S24:
         case BoardLocation.S31:
         case BoardLocation.S32:
+        case BoardLocation.S33:
+        case BoardLocation.S34:
         case BoardLocation.S41:
         case BoardLocation.S42:
+        case BoardLocation.S43:
+        case BoardLocation.S44:
             return true;
         default:
             return false;
@@ -159,35 +160,51 @@ function isPathValid(path: BoardLocation[], amphipod: Amphipod, amphipods: Amphi
     if (isAtStart(destination)) {
         switch (amphipod.type) {
             case "A":
-                if (destination === BoardLocation.S12) {
-                    return true;
-                }
-                if (destination === BoardLocation.S11) {
-                    return getTypeAt(amphipods, BoardLocation.S12) === "A";
+                switch (destination) {
+                    case BoardLocation.S11:
+                        return getRoomState(amphipod.type, amphipods) === ".AAA";
+                    case BoardLocation.S12:
+                        return getRoomState(amphipod.type, amphipods) === "..AA";
+                    case BoardLocation.S13:
+                        return getRoomState(amphipod.type, amphipods) === "...A";
+                    case BoardLocation.S14:
+                        return true;
                 }
                 return false;
             case "B":
-                if (destination === BoardLocation.S22) {
-                    return true;
-                }
-                if (destination === BoardLocation.S21) {
-                    return getTypeAt(amphipods, BoardLocation.S22) === "B";
+                switch (destination) {
+                    case BoardLocation.S21:
+                        return getRoomState(amphipod.type, amphipods) === ".BBB";
+                    case BoardLocation.S22:
+                        return getRoomState(amphipod.type, amphipods) === "..BB";
+                    case BoardLocation.S23:
+                        return getRoomState(amphipod.type, amphipods) === "...B";
+                    case BoardLocation.S24:
+                        return true;
                 }
                 return false;
             case "C":
-                if (destination === BoardLocation.S32) {
-                    return true;
-                }
-                if (destination === BoardLocation.S31) {
-                    return getTypeAt(amphipods, BoardLocation.S32) === "C";
+                switch (destination) {
+                    case BoardLocation.S31:
+                        return getRoomState(amphipod.type, amphipods) === ".CCC";
+                    case BoardLocation.S32:
+                        return getRoomState(amphipod.type, amphipods) === "..CC";
+                    case BoardLocation.S33:
+                        return getRoomState(amphipod.type, amphipods) === "...C";
+                    case BoardLocation.S34:
+                        return true;
                 }
                 return false;
             case "D":
-                if (destination === BoardLocation.S42) {
-                    return true;
-                }
-                if (destination === BoardLocation.S41) {
-                    return getTypeAt(amphipods, BoardLocation.S42) === "D";
+                switch (destination) {
+                    case BoardLocation.S41:
+                        return getRoomState(amphipod.type, amphipods) === ".DDD";
+                    case BoardLocation.S42:
+                        return getRoomState(amphipod.type, amphipods) === "..DD";
+                    case BoardLocation.S43:
+                        return getRoomState(amphipod.type, amphipods) === "...D";
+                    case BoardLocation.S44:
+                        return true;
                 }
                 return false;
         }
@@ -196,37 +213,54 @@ function isPathValid(path: BoardLocation[], amphipod: Amphipod, amphipods: Amphi
 }
 
 function atDestination(amphipod: Amphipod, amphipods: Amphipod[]): boolean {
+    const roomState = getRoomState(amphipod.type, amphipods);
     switch (amphipod.type) {
         case "A":
-            if (amphipod.location === BoardLocation.S12) {
-                return true;
-            }
-            if (amphipod.location === BoardLocation.S11) {
-                return getTypeAt(amphipods, BoardLocation.S12) === "A";
+            switch (amphipod.location) {
+                case BoardLocation.S11:
+                    return roomState === ".AAA";
+                case BoardLocation.S12:
+                    return roomState === "..AA";
+                case BoardLocation.S13:
+                    return roomState === "...A";
+                case BoardLocation.S14:
+                    return true;
             }
             break;
         case "B":
-            if (amphipod.location === BoardLocation.S22) {
-                return true;
-            }
-            if (amphipod.location === BoardLocation.S21) {
-                return getTypeAt(amphipods, BoardLocation.S22) === "B";
+            switch (amphipod.location) {
+                case BoardLocation.S21:
+                    return roomState === ".BBB";
+                case BoardLocation.S22:
+                    return roomState === "..BB";
+                case BoardLocation.S23:
+                    return roomState === "...B";
+                case BoardLocation.S24:
+                    return true;
             }
             break;
         case "C":
-            if (amphipod.location === BoardLocation.S32) {
-                return true;
-            }
-            if (amphipod.location === BoardLocation.S31) {
-                return getTypeAt(amphipods, BoardLocation.S32) === "C";
+            switch (amphipod.location) {
+                case BoardLocation.S31:
+                    return roomState === ".CCC";
+                case BoardLocation.S32:
+                    return roomState === "..CC";
+                case BoardLocation.S33:
+                    return roomState === "...C";
+                case BoardLocation.S34:
+                    return true;
             }
             break;
         case "D":
-            if (amphipod.location === BoardLocation.S42) {
-                return true;
-            }
-            if (amphipod.location === BoardLocation.S41) {
-                return getTypeAt(amphipods, BoardLocation.S42) === "D";
+            switch (amphipod.location) {
+                case BoardLocation.S41:
+                    return roomState === ".DDD";
+                case BoardLocation.S42:
+                    return roomState === "..DD";
+                case BoardLocation.S43:
+                    return roomState === "...D";
+                case BoardLocation.S44:
+                    return true;
             }
             break;
     }
@@ -249,28 +283,46 @@ function getMoveCost(type: string): number {
 }
 
 function isWinningGameState(state: GameState): boolean {
-    let isWinning = true;
-    for (const amphipod of state.amphipods) {
-        switch (amphipod.type) {
-            case "A":
-                isWinning =
-                    isWinning && (amphipod.location === BoardLocation.S11 || amphipod.location === BoardLocation.S12);
-                break;
-            case "B":
-                isWinning =
-                    isWinning && (amphipod.location === BoardLocation.S21 || amphipod.location === BoardLocation.S22);
-                break;
-            case "C":
-                isWinning =
-                    isWinning && (amphipod.location === BoardLocation.S31 || amphipod.location === BoardLocation.S32);
-                break;
-            case "D":
-                isWinning =
-                    isWinning && (amphipod.location === BoardLocation.S41 || amphipod.location === BoardLocation.S42);
-                break;
-        }
+    return (
+        getRoomState("A", state.amphipods) === "AAAA" &&
+        getRoomState("B", state.amphipods) === "BBBB" &&
+        getRoomState("C", state.amphipods) === "CCCC" &&
+        getRoomState("D", state.amphipods) === "DDDD"
+    );
+}
+
+function getRoomState(type: string, amphipods: Amphipod[]): string {
+    switch (type) {
+        case "A":
+            return (
+                getTypeAt(amphipods, BoardLocation.S11) +
+                getTypeAt(amphipods, BoardLocation.S12) +
+                getTypeAt(amphipods, BoardLocation.S13) +
+                getTypeAt(amphipods, BoardLocation.S14)
+            );
+        case "B":
+            return (
+                getTypeAt(amphipods, BoardLocation.S21) +
+                getTypeAt(amphipods, BoardLocation.S22) +
+                getTypeAt(amphipods, BoardLocation.S23) +
+                getTypeAt(amphipods, BoardLocation.S24)
+            );
+        case "C":
+            return (
+                getTypeAt(amphipods, BoardLocation.S31) +
+                getTypeAt(amphipods, BoardLocation.S32) +
+                getTypeAt(amphipods, BoardLocation.S33) +
+                getTypeAt(amphipods, BoardLocation.S34)
+            );
+        case "D":
+            return (
+                getTypeAt(amphipods, BoardLocation.S41) +
+                getTypeAt(amphipods, BoardLocation.S42) +
+                getTypeAt(amphipods, BoardLocation.S43) +
+                getTypeAt(amphipods, BoardLocation.S44)
+            );
     }
-    return isWinning;
+    return "";
 }
 
 function toLog(amphipods: Amphipod[]): void {
@@ -296,11 +348,25 @@ function toLog(amphipods: Amphipod[]): void {
         BoardLocation.S32
     )}#${getTypeAt(amphipods, BoardLocation.S42)}#`;
     console.log(line);
+    line = `  #${getTypeAt(amphipods, BoardLocation.S13)}#${getTypeAt(amphipods, BoardLocation.S23)}#${getTypeAt(
+        amphipods,
+        BoardLocation.S33
+    )}#${getTypeAt(amphipods, BoardLocation.S43)}#`;
+    console.log(line);
+    line = `  #${getTypeAt(amphipods, BoardLocation.S14)}#${getTypeAt(amphipods, BoardLocation.S24)}#${getTypeAt(
+        amphipods,
+        BoardLocation.S34
+    )}#${getTypeAt(amphipods, BoardLocation.S44)}#`;
+    console.log(line);
     line = "  #########";
     console.log(line);
 }
 
 function dayTwentyThreePartOne(): void {
+    // todo
+}
+
+function dayTwentyThreePartTwo(): void {
     const locationMap: Map<string, BoardLocation> = new Map<string, BoardLocation>();
     locationMap.set("h1", BoardLocation.H1);
     locationMap.set("h2", BoardLocation.H2);
@@ -313,16 +379,28 @@ function dayTwentyThreePartOne(): void {
     locationMap.set("h9", BoardLocation.H9);
     locationMap.set("h10", BoardLocation.H10);
     locationMap.set("h11", BoardLocation.H11);
+
     locationMap.set("s11", BoardLocation.S11);
     locationMap.set("s12", BoardLocation.S12);
+    locationMap.set("s13", BoardLocation.S13);
+    locationMap.set("s14", BoardLocation.S14);
+
     locationMap.set("s21", BoardLocation.S21);
     locationMap.set("s22", BoardLocation.S22);
+    locationMap.set("s23", BoardLocation.S23);
+    locationMap.set("s24", BoardLocation.S24);
+
     locationMap.set("s31", BoardLocation.S31);
     locationMap.set("s32", BoardLocation.S32);
+    locationMap.set("s33", BoardLocation.S33);
+    locationMap.set("s34", BoardLocation.S34);
+
     locationMap.set("s41", BoardLocation.S41);
     locationMap.set("s42", BoardLocation.S42);
+    locationMap.set("s43", BoardLocation.S43);
+    locationMap.set("s44", BoardLocation.S44);
 
-    const paths: BoardLocation[][] = pathStrings.map((value: string) => {
+    const paths: BoardLocation[][] = buildPaths().map((value: string) => {
         return value.split(" ").map((token: string) => {
             const location = locationMap.get(token);
             if (location === undefined) {
@@ -353,20 +431,30 @@ function dayTwentyThreePartOne(): void {
     const initialGameState: GameState = new GameState(
         [
             new Amphipod("A", BoardLocation.S11),
-            new Amphipod("C", BoardLocation.S12),
+            new Amphipod("D", BoardLocation.S12),
+            new Amphipod("D", BoardLocation.S13),
+            new Amphipod("C", BoardLocation.S14),
+
             new Amphipod("D", BoardLocation.S21),
-            new Amphipod("D", BoardLocation.S22),
+            new Amphipod("C", BoardLocation.S22),
+            new Amphipod("B", BoardLocation.S23),
+            new Amphipod("D", BoardLocation.S24),
+
             new Amphipod("C", BoardLocation.S31),
             new Amphipod("B", BoardLocation.S32),
+            new Amphipod("A", BoardLocation.S33),
+            new Amphipod("B", BoardLocation.S34),
+
             new Amphipod("A", BoardLocation.S41),
-            new Amphipod("B", BoardLocation.S42)
+            new Amphipod("A", BoardLocation.S42),
+            new Amphipod("C", BoardLocation.S43),
+            new Amphipod("B", BoardLocation.S44)
         ],
         0,
         ""
     );
     toLog(initialGameState.amphipods);
 
-    // const winningStates: GameState[] = [];
     let minimumEnergy = Infinity;
     let hasWinningState = false;
     let stack: GameState[] = [initialGameState];
@@ -375,12 +463,7 @@ function dayTwentyThreePartOne(): void {
         iteration++;
         if (iteration === 50000) {
             iteration = 0;
-            stack.sort((a, b) => {
-                return a.cost - b.cost;
-            });
-            // toLog(stack[stack.length-1].amphipods);
             console.log(stack.length);
-            const y = 0;
         }
         const current = stack.pop();
         if (current === undefined) {
@@ -393,26 +476,21 @@ function dayTwentyThreePartOne(): void {
         }
         for (const amphipod of current.amphipods) {
             if (atDestination(amphipod, current.amphipods)) {
-                // console.log("destination");
                 continue;
             }
             const availablePaths = findPathsByStart(amphipod.location, paths);
             for (const availablePath of availablePaths) {
                 const destination = availablePath[availablePath.length - 1];
-                // console.log(`${amphipod.type} ${amphipod.location}->${destination}`);
                 if (isPathBlocked(availablePath, current.amphipods)) {
-                    // console.log("blocked");
                     continue;
                 }
                 if (!isPathValid(availablePath, amphipod, current.amphipods)) {
-                    // console.log("invalid");
                     continue;
                 }
                 const newCost = current.cost + getMoveCost(amphipod.type) * (availablePath.length - 1);
                 if (hasWinningState && newCost > minimumEnergy) {
                     continue;
                 }
-                // console.log(newCost);
                 const newAmphipods: Amphipod[] = current.amphipods.map((a: Amphipod) => {
                     if (a === amphipod) {
                         return new Amphipod(a.type, destination);
@@ -425,9 +503,7 @@ function dayTwentyThreePartOne(): void {
                     `${current.moves}${amphipod.type + amphipod.location.toString()}-${destination},`
                 );
                 if (isWinningGameState(newState)) {
-                    // winningStates.push(newState);
                     if (newState.cost < minimumEnergy) {
-                        // toLog(newState.amphipods);
                         minimumEnergy = newState.cost;
                         console.log(minimumEnergy);
                         hasWinningState = true;
@@ -436,16 +512,10 @@ function dayTwentyThreePartOne(): void {
                         });
                     }
                 } else {
-                    // toLog(newState.amphipods);
-                    // console.log(newState.cost);
                     stack.push(newState);
                 }
             }
         }
     }
     console.log(minimumEnergy);
-}
-
-function dayTwentyThreePartTwo(): void {
-    // todo
 }
