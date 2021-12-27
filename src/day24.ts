@@ -393,32 +393,51 @@ function dayTwentyFourPartOne(): void {
 
     const instructions = preprocess(monad);
 
+    const digits = 14;
     let isLoop = true;
-    const queue = new Array(14).fill(9);
+    const queue = new Array(digits).fill(9);
     let minimum = Infinity;
+    let digit = digits - 1;
+    let count = 0;
     while (isLoop) {
         // console.log(`Q: ${queue}`);
         alu.execute(instructions, queue);
-        if (alu.z() < minimum) {
-            minimum = alu.z();
-            console.log(queue);
-            console.log(minimum);
-        }
-        // console.log(alu.z());
+
         if (alu.z() === 0) {
             isLoop = false;
             alu.toLog();
             console.log(queue);
+            const modelNumber = queue
+                .map((value: number) => {
+                    return digit.toString();
+                })
+                .join("");
+            console.log(queue);
+            break;
         }
 
-        queue[queue.length - 1] = queue[queue.length - 1] - 1;
-        for (let i = queue.length - 1; i > -1; i--) {
-            if (queue[i] === 0) {
-                queue[i] = 9;
-                queue[i - 1] = queue[i - 1] - 1;
-                continue;
+        if (alu.z() < minimum) {
+            minimum = alu.z();
+            console.log(queue);
+            console.log(minimum);
+            digit--;
+            if (digit === -1) {
+                digit = digits - 1;
             }
-            break;
+            count = 0;
+        }
+        // console.log(alu.z());
+        queue[digit] = queue[digit] - 1;
+        if (queue[digit] === 0) {
+            queue[digit] = 9;
+        }
+        count++;
+        if (count === 9) {
+            count = 0;
+            digit--;
+            if (digit === -1) {
+                digit = digits - 1;
+            }
         }
     }
 }
