@@ -8,6 +8,12 @@ export { dayTwentyTwoPartOne, dayTwentyTwoPartTwo };
 
 /*
 // Test values
+const steps : string[] = [
+    "on x=10..12,y=10..12,z=10..12",
+    "on x=11..13,y=11..13,z=11..13",
+    "off x=9..11,y=9..11,z=9..11",
+    "on x=10..10,y=10..10,z=10..10"
+];
 const steps: string[] = [
     "on x=-20..26,y=-36..17,z=-47..7",
     "on x=-20..33,y=-21..23,z=-26..28",
@@ -28,11 +34,10 @@ const steps: string[] = [
     "off x=-32..-23,y=11..30,z=-14..3",
     "on x=-49..-5,y=-3..45,z=-29..18",
     "off x=18..30,y=-20..-8,z=-3..13",
-    "on x=-41..9,y=-7..43,z=-33..15",
+    "on x=-41..9,y=-7..43,z=-33..15"
     "on x=-54112..-39298,y=-85059..-49293,z=-27449..7877",
-    "on x=967..23432,y=45373..81175,z=27513..53682"
+     "on x=967..23432,y=45373..81175,z=27513..53682"
 ];
-*/
 const steps: string[] = [
     "on x=-5..47,y=-31..22,z=-19..33",
     "on x=-44..5,y=-27..21,z=-14..35",
@@ -95,8 +100,8 @@ const steps: string[] = [
     "on x=-53470..21291,y=-120233..-33476,z=-44150..38147",
     "off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"
 ];
+*/
 
-/*
 // Real values
 const steps: string[] = [
     "on x=-46..2,y=-26..20,z=-39..5",
@@ -520,7 +525,6 @@ const steps: string[] = [
     "on x=66679..79368,y=-43938..-18102,z=1633..26650",
     "on x=-32143..-25109,y=62219..88867,z=1027..29516"
 ];
-*/
 
 class Map3d {
     constructor(
@@ -640,7 +644,22 @@ function dayTwentyTwoPartTwo(): void {
                     const tokens = token.split("..");
                     return new Range(parseInt(tokens[0]), parseInt(tokens[1]));
                 });
-            onCuboids.push(new Cuboid(ranges[0], ranges[1], ranges[2]));
+            const onCuboid = new Cuboid(ranges[0], ranges[1], ranges[2]);
+
+            const stack = onCuboids.slice();
+            onCuboids = [];
+            while (stack.length > 0) {
+                const current = stack.pop();
+                if (current === undefined) {
+                    throw new Error("current undefined");
+                }
+                const subtracted = current.subtract(onCuboid);
+                for (const s of subtracted) {
+                    onCuboids.push(s);
+                }
+            }
+            onCuboids.push(onCuboid);
+
             console.log(onCuboids.length);
         } else if (step.startsWith("off")) {
             const ranges = step
@@ -674,7 +693,10 @@ function dayTwentyTwoPartTwo(): void {
     for (let i = 0; i < onCuboids.length; i++) {
         const current = onCuboids[i];
         volume += current.size();
-        for (let j = i + 1; j < onCuboids.length; j++) {
+        for (let j = 0; j < onCuboids.length; j++) {
+            if (j === i) {
+                continue;
+            }
             const intersection = current.intersect(onCuboids[j]);
             if (intersection !== undefined) {
                 volume -= intersection.size();

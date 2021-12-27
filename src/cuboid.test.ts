@@ -80,6 +80,11 @@ test("intersect", () => {
     expect(intersect3?.rangeY.end).toBe(4);
     expect(intersect3?.rangeZ.start).toBe(3);
     expect(intersect3?.rangeZ.end).toBe(5);
+
+    const right4 = Cuboid.fromPoints(0, 0, 0, 5, 5, 5);
+    const intersect4 = left.intersect(right4);
+    expect(intersect4).toBeDefined();
+    expect(intersect4?.isMatch(Cuboid.fromPoints(0,0,0,5,5,5))).toBeTruthy();
 });
 
 test("isMatch", () => {
@@ -93,46 +98,46 @@ test("isMatch", () => {
 });
 
 test("subtract", () => {
-    const left = Cuboid.fromPoints(0, 0, 0, 4, 4, 4);
+    const left1 = Cuboid.fromPoints(0, 0, 0, 4, 4, 4);
 
     const right1 = Cuboid.fromPoints(-10, -10, -10, 10, 10, 10);
-    const output1 = left.subtract(right1);
+    const output1 = left1.subtract(right1);
     expect(output1.length).toBe(0);
 
     const right2 = Cuboid.fromPoints(5, 0, 0, 9, 4, 4);
-    const output2 = left.subtract(right2);
+    const output2 = left1.subtract(right2);
     expect(output2.length).toBe(1);
-    expect(output2[0].isMatch(left)).toBeTruthy();
+    expect(output2[0].isMatch(left1)).toBeTruthy();
 
     const right3 = Cuboid.fromPoints(2, 0, 0, 6, 4, 4);
-    const output3 = left.subtract(right3);
+    const output3 = left1.subtract(right3);
     expect(output3.length).toBe(1);
     expect(output3[0].isMatch(Cuboid.fromPoints(0, 0, 0, 1, 4, 4)));
 
     const right4 = Cuboid.fromPoints(1, 0, 0, 3, 4, 4);
-    const output4 = left.subtract(right4);
+    const output4 = left1.subtract(right4);
     expect(output4.length).toBe(2);
     expect(output4[0].isMatch(Cuboid.fromPoints(0, 0, 0, 0, 4, 4))).toBeTruthy();
     expect(output4[1].isMatch(Cuboid.fromPoints(4, 0, 0, 4, 4, 4))).toBeTruthy();
 
     const right5 = Cuboid.fromPoints(0, 0, 0, 4, 4, 4);
-    const output5 = left.subtract(right5);
+    const output5 = left1.subtract(right5);
     expect(output5.length).toBe(0);
 
     const right6 = Cuboid.fromPoints(4, 0, 0, 4, 4, 4);
-    const output6 = left.subtract(right6);
+    const output6 = left1.subtract(right6);
     expect(output6.length).toBe(1);
     expect(output6[0].isMatch(Cuboid.fromPoints(0, 0, 0, 3, 4, 4))).toBeTruthy();
 
     const right7 = Cuboid.fromPoints(0, 0, 0, 0, 4, 4);
-    const output7 = left.subtract(right7);
+    const output7 = left1.subtract(right7);
     expect(output7.length).toBe(1);
     expect(output7[0].isMatch(Cuboid.fromPoints(1, 0, 0, 4, 4, 4))).toBeTruthy();
 
     const right8 = Cuboid.fromPoints(1, 1, 1, 3, 3, 3);
-    const output8 = left.subtract(right8);
+    const output8 = left1.subtract(right8);
     expect(output8.length).toBe(26);
-    const splits: Cuboid[] = [
+    const splits8: Cuboid[] = [
         Cuboid.fromPoints(0, 0, 0, 0, 0, 0),
         Cuboid.fromPoints(1, 0, 0, 3, 0, 0),
         Cuboid.fromPoints(4, 0, 0, 4, 0, 0),
@@ -168,7 +173,33 @@ test("subtract", () => {
         Cuboid.fromPoints(1, 4, 4, 3, 4, 4),
         Cuboid.fromPoints(4, 4, 4, 4, 4, 4)
     ];
-    for (const split of splits) {
+    for (const split of splits8) {
+        expect(
+            output8.find(c => {
+                return c.isMatch(split);
+            })
+        ).toBeDefined();
+    }
+
+    const left2 = Cuboid.fromPoints(0, 0, 0, 4, 4, 0);
+
+    const right9 = Cuboid.fromPoints(1, 1, 0, 3, 3, 0);
+    const output9 = left2.subtract(right9);
+    expect(output9.length).toBe(8);
+    const splits9: Cuboid[] = [
+        Cuboid.fromPoints(0, 0, 0, 0, 0, 0),
+        Cuboid.fromPoints(1, 0, 0, 3, 0, 0),
+        Cuboid.fromPoints(4, 0, 0, 4, 0, 0),
+
+        Cuboid.fromPoints(0, 1, 0, 0, 3, 0),
+        Cuboid.fromPoints(1, 1, 0, 3, 3, 0),
+        Cuboid.fromPoints(4, 1, 0, 4, 3, 0),
+
+        Cuboid.fromPoints(0, 4, 0, 0, 4, 0),
+        Cuboid.fromPoints(1, 4, 0, 3, 4, 0),
+        Cuboid.fromPoints(4, 4, 0, 4, 4, 0)
+    ];
+    for (const split of splits9) {
         expect(
             output8.find(c => {
                 return c.isMatch(split);

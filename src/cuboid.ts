@@ -107,7 +107,7 @@ export class Cuboid {
         return output;
     }
 
-    clone() : Cuboid{
+    clone(): Cuboid {
         return new Cuboid(this.rangeX, this.rangeY, this.rangeZ);
     }
 
