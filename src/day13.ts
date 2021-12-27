@@ -6,7 +6,7 @@ import "./extensions";
 
 import { createMap2d, Map2d } from "./map2d";
 import { Point } from "./point";
-import { EmptyRange, Range } from "./range";
+import { Range } from "./range";
 
 export { dayThirteenPartOne, dayThirteenPartTwo };
 
@@ -1043,10 +1043,10 @@ function dayThirteenPartOne(): void {
     });
     const rangeX = points.reduce((range: Range, point: Point) => {
         return range.unionValue(point.x);
-    }, EmptyRange);
+    }, new Range(0, 0));
     const rangeY = points.reduce((range: Range, point: Point) => {
         return range.unionValue(point.y);
-    }, EmptyRange);
+    }, new Range(0, 0));
     let paper: Map2d = createMap2d(rangeX.end + 1, rangeY.end + 1);
     for (const point of points) {
         paper.setValueAtPoint(point, 1);
