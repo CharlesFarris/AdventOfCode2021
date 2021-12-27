@@ -387,93 +387,39 @@ function preprocess(lines: string[]): number[][] {
     });
 }
 
-function fillQueue(modelNumber: string): number[] {
-    return modelNumber
-        .split("")
-        .sort()
-        .map((character: string) => {
-            return parseInt(character);
-        });
-}
-
-function createNextQueue(source: number[], searchDirection: number[], target: number[]): void {
-    for (let i = 0; i < source.length; i++) {
-        if (searchDirection[i] !== 0) {
-            let value = source[i] + searchDirection[i];
-            if (value > 9) {
-                value -= 9;
-            } else if (value < 1) {
-                value += 9;
-            }
-            target[i] = value;
-            break;
-        }
-    }
-}
-
-function updateSearchDirection(searchDirection: number[]): void {
-    for (let i = 0; i < searchDirection.length; i++) {
-        switch (searchDirection[i]) {
-            case 1:
-                searchDirection[i] = -1;
-                return;
-            case -1:
-                searchDirection[i] = 0;
-                if (i === searchDirection.length - 1) {
-                    searchDirection[0] = 1;
-                } else {
-                    searchDirection[i + 1] = 1;
-                }
-                return;
-        }
-    }
-}
-
 function dayTwentyFourPartOne(): void {
     const alu = new ArthimeticLogicUnit();
     alu.toLog();
 
     const instructions = preprocess(monad);
 
-    let minimumQueue = new Array(14).fill(9);
-    alu.execute(instructions, minimumQueue);
-    let minimum = alu.z();
-
     let isLoop = true;
-    const searchDirection = new Array(14).fill(0);
-    searchDirection[0] = -1;
-
-    const queue = minimumQueue.slice();
+    const queue = new Array(14).fill(9);
+    let minimum = Infinity;
     while (isLoop) {
-        createNextQueue(minimumQueue, searchDirection, queue);
-        console.log(`M: ${minimumQueue}`);
-        console.log(`Q: ${queue}`);
-        console.log(`S: ${searchDirection}`);
+        // console.log(`Q: ${queue}`);
         alu.execute(instructions, queue);
-        if (alu.getVariables()[2] === 0) {
+        if (alu.z() < minimum) {
+            minimum = alu.z();
+            console.log(queue);
+            console.log(minimum);
+        }
+        // console.log(alu.z());
+        if (alu.z() === 0) {
             isLoop = false;
             alu.toLog();
             console.log(queue);
         }
-        if (alu.z() < minimum) {
-            alu.toLog();
-            minimum = alu.z();
-            minimumQueue = queue.slice();
-        } else {
-            updateSearchDirection(searchDirection);
-        }
 
-        /*
-        queue[0] = queue[0] - 1;
-        for (let i = 0; i < queue.length - 1; i++) {
+        queue[queue.length - 1] = queue[queue.length - 1] - 1;
+        for (let i = queue.length - 1; i > -1; i--) {
             if (queue[i] === 0) {
                 queue[i] = 9;
-                queue[i + 1] = queue[i + 1] - 1;
+                queue[i - 1] = queue[i - 1] - 1;
                 continue;
             }
             break;
         }
-        */
     }
 }
 
