@@ -394,6 +394,8 @@ function dayTwentyFourPartOne(): void {
     const instructions = preprocess(monad);
 
     const digits = 14;
+
+    /*
     let isLoop = true;
     const queue = new Array(digits).fill(9);
     let minimum = Infinity;
@@ -438,6 +440,35 @@ function dayTwentyFourPartOne(): void {
             if (digit === -1) {
                 digit = digits - 1;
             }
+        }
+    }
+    */
+
+    const spinResult = [1, 1, 9, 8, 9, 9, 2, 9, 9, 9, 8, 5, 9, 8];
+    const spinResultMinimum = 397;
+    /*
+    const mask = spinResult.map((value: number) => {
+        return value === 9 ? 1 : 0;
+    });
+    */
+    const masks: number[][] = [
+        [0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+    ];
+    for (const mask of masks) {
+        console.log(mask);
+        const queue = spinResult.slice();
+        for (let i = 0; i < 8; ++i) {
+            for (let j = 0; j < spinResult.length; j++) {
+                queue[j] = queue[j] - mask[j];
+            }
+            alu.execute(instructions, queue);
+            console.log(alu.z());
         }
     }
 }
