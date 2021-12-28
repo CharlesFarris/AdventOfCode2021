@@ -1,6 +1,10 @@
 /* eslint-disable no-console */
 // AoC Day 19 Challenge
 
+import { Point } from "./point";
+import { Point3d } from "./point3d";
+import { Vector3d } from "./vector3d";
+
 export { dayNineteenPartOne, dayNineteenPartTwo };
 
 // Test values
@@ -143,57 +147,72 @@ const lines: string[] = [
     "30,-46,-14    "
 ];
 
-/*
-// Real values
-const lines:string[] = [];
-*/
-
-class Point3d {
-    constructor(readonly x: number, readonly y: number, readonly z: number) {}
+enum Axis {
+    X,
+    Y,
+    Z
 }
 
-class Vector {
-    constructor(x: number, y: number, z: number) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+function rotateAxies(point: Point3d, axis: Axis): Point3d {
+    switch (axis) {
+        case Axis.X:
+            return new Point3d(point.x, -point.z, point.y);
+        case Axis.Y:
+            return new Point3d(point.z, point.y, -point.x);
+        case Axis.Z:
+            return new Point3d(-point.y, point.x, point.z);
+        default:
+            throw new Error("axis unknown");
     }
+}
 
-    copy(v: Vector): void {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
+function rotateAxisAll(points: Point3d[], axis: Axis): Point3d[] {
+    return points.map((point: Point3d) => {
+        return rotateAxies(point, axis);
+    });
+}
+
+function negateAxis(point: Point3d, axis: Axis): Point3d {
+    switch (axis) {
+        case Axis.X:
+            return new Point3d(-point.x, point.y, point.z);
+        case Axis.Y:
+            return new Point3d(point.x, -point.y, point.z);
+        case Axis.Z:
+            return new Point3d(point.x, point.y, -point.z);
+        default:
+            throw new Error("axis unknown");
     }
+}
 
-    clone(): Vector {
-        return new Vector(this.x, this.y, this.z);
-    }
+function negateAxisAll(points: Point3d[], axis: Axis): Point3d[] {
+    return points.map((point: Point3d) => {
+        return negateAxis(point, axis);
+    });
+}
 
-    negate(): void {
-        this.x = -this.x;
-        this.y = -this.y;
-        this.z = -this.z;
-    }
-
-    add(v: Vector): void {
-        this.x += v.x;
-        this.y += v.y;
-        this.z += v.z;
-    }
-
-    subtract(v: Vector): void {
-        this.x -= v.x;
-        this.y -= v.y;
-        this.z -= v.z;
-    }
-
-    x: number;
-    y: number;
-    z: number;
+function computeDeltas(points: Point3d[]): Vector3d[] {
+    return points.map((point: Point3d) => {
+        return point.subract(points[0]);
+    });
 }
 
 class Scanner {
     constructor(readonly id: number, readonly points: Point3d[]) {}
+}
+
+function vectorsToLog(vectors: Vector3d[]): void {
+    console.log(`Count: ${vectors.length}`);
+    for (const v of vectors) {
+        console.log(`${v.x},${v.y},${v.z}`);
+    }
+}
+
+function pointsToLog(points: Point3d[]): void {
+    console.log(`Count: ${points.length}`);
+    for (const p of points) {
+        console.log(`${p.x},${p.y},${p.z}`);
+    }
 }
 
 function parse(inputs: string[]): Scanner[] {
@@ -215,8 +234,15 @@ function parse(inputs: string[]): Scanner[] {
     }
     return scanners;
 }
+
 function dayNineteenPartOne(): void {
     const scanners = parse(lines);
+
+    for (const scanner of scanners) {
+        console.log(scanner.id);
+        const deltas = computeDeltas(scanner.points);
+        vectorsToLog(deltas);
+    }
 
     console.log(scanners.length);
 }
