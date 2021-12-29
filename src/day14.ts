@@ -5,6 +5,7 @@ import { unstable_renderSubtreeIntoContainer } from "react-dom";
 
 export { dayFourteenPartOne, dayFourteenPartTwo };
 
+/*
 // Test values
 const template = "NNCB";
 const rules: string[] = [
@@ -25,8 +26,8 @@ const rules: string[] = [
     "CC -> N",
     "CN -> C"
 ];
+*/
 
-/*
 // Real values
 const template = "HBCHSNFFVOBNOFHFOBNO";
 const rules: string[] = [
@@ -131,7 +132,6 @@ const rules: string[] = [
     "OC -> V",
     "HK -> F"
 ];
-*/
 
 function dayFourteenPartOne(): void {
     const ruleMap = rules.reduce((map: Map<string, string>, rule: string) => {
@@ -195,14 +195,37 @@ function dayFourteenPartOne(): void {
     console.log(`Difference: ${(mostCommonCount - leastCommonCount).toString()}`);
 }
 
-class Node {
-    constructor(left: string, right: string, iteration: number) {
-        this.key = left + right;
-        this.iteration = iteration;
+function updateCount(elementMap: Map<string, number>, insert: string): void {
+    const count = elementMap.get(insert);
+    if (count === undefined) {
+        elementMap.set(insert, 1);
+    } else {
+        elementMap.set(insert, count + 1);
     }
+}
 
-    readonly key: string;
-    readonly iteration: number;
+function recurse(
+    left: string,
+    right: string,
+    step: number,
+    maxStep: number,
+    ruleMap: Map<string, string>,
+    elementMap: Map<string, number>
+): void {
+    console.log(`${left + right} ${step}`);
+    if (step === maxStep) {
+        return;
+    }
+    const insert = ruleMap.get(left + right);
+    if (insert === undefined) {
+        throw new Error("insert undefined");
+    }
+    updateCount(elementMap, insert);
+    recurse(left, insert, step + 1, maxStep, ruleMap, elementMap);
+    recurse(insert, right, step + 1, maxStep, ruleMap, elementMap);
+}
+class Node {
+    constructor(readonly character: string, readonly iteration: number) {}
 }
 
 function dayFourteenPartTwo(): void {
@@ -212,67 +235,67 @@ function dayFourteenPartTwo(): void {
         return map;
     }, new Map<string, string>());
 
-    const currentTemplate = template;
-    const elementMap = currentTemplate.split("").reduce((localMap: Map<string, number>, element: string) => {
-        const count = localMap.get(element);
-        if (count === undefined) {
-            localMap.set(element, 1);
-        } else {
-            localMap.set(element, count + 1);
-        }
-        return localMap;
-    }, new Map<string, number>());
+    const elementMap = new Map<string, number>();
+    template.split("").forEach((character: string) => {
+        updateCount(elementMap, character);
+    });
 
-    const characters: string[] = currentTemplate.split("");
-    const maxIteration = 40;
-    for (let i = 0; i < characters.length - 2; i++) {
-        const stack: Node[] = [new Node(characters[i], characters[i + 1], 0)];
-        while (stack.length > 0) {
-            const current = stack.pop();
-            if (current === undefined) {
-                throw new Error("current undefied");
+    const maxStep = 40;
+    const characters = template.split("");
+    for (let i = 0; i < characters.length - 1; i++) {
+        console.log(characters[i] + characters[i + 1]);
+        recurse(characters[i], characters[i + 1], 0, maxStep, ruleMap, elementMap);
+    }
+
+    /*
+
+    const stack: Node[] = template
+        .split("")
+        .reverse()
+        .reduce((localStack: Node[], character: string) => {
+            localStack.push(new Node(character, 1));
+            return localStack;
+        }, []);
+    while (stack.length > 0) {
+        const left = stack.pop();
+        if (left === undefined) {
+            throw new Error("left undefined");
+        }
+        let isLoop = true;
+        while (isLoop) {
+            const right = stack[stack.length - 1];
+            if (right === undefined) {
+                throw new Error("right undefined");
             }
-            if (current.iteration === maxIteration) {
-                continue;
-            }
-            const insert = ruleMap.get(current.key);
+            const insert = ruleMap.get(left.character + right.character);
             if (insert === undefined) {
                 throw new Error("insert undefined");
             }
-            const count = elementMap.get(insert);
-            if (count === undefined) {
-                elementMap.set(insert, 1);
+            updateCount(elementMap, insert);
+            const newNode = new Node(insert, right.iteration + 1);
+            if (newNode.iteration === maxIteration) {
+                isLoop = false;
             } else {
-                elementMap.set(insert, count + 1);
+                stack.push(newNode);
             }
-            stack.push(new Node(insert, current.key[1], current.iteration + 1));
-            stack.push(new Node(current.key[0], insert, current.iteration + 1));
-            console.log(stack.length);
-
-            /*
-            const left = stack.pop();
-            if (left === undefined) {
-                throw new Error("left undefined");
-            }
-            let right = stack[stack.length - 1];
-            while (right.iteration < maxIteration) {
-                const key = left.character + right.character;
-                const insert = ruleMap.get(key);
-                if (insert === undefined) {
-                    throw new Error("insert undefined");
-                }
-                const count = elementMap.get(insert);
-                if (count === undefined) {
-                    elementMap.set(insert, 1);
-                } else {
-                    elementMap.set(insert, count + 1);
-                }
-                right = new Letter(insert, right.iteration + 1);
-                stack.push(right);
-            }
-            */
         }
     }
+
+    // A1 A1 B1 B1
+    // A1 B2 A1 C2 B1 A2 C1
+    // A1 C3 B2 C3 A1 B3 C2 A3 B1 C3 A2 B3 C1
+    // A1 B4 C3 A4 B2 A4 C3 B4 A1 C4 B3 A4 C2 B4 A3 C4 B1 A4 C3 B4 A2 C4 B3 A4 C1
+
+    // A1 - A1 B1 B1
+    // A1 - B2 A1 B1 B1
+    // A1 - C3 B2 A1 B1 B1
+    // A1 - B4 C3 B2 A1 B1 B1
+    // B4
+    // C3 - B2 A1 B1 B1
+    // A4
+    //
+
+    */
 
     let mostCommonElement = "";
     let mostCommonCount = -Infinity;
