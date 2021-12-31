@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 // AoC Day 24 Challenge
 
+import { Alu } from "./alu";
+
 export { dayTwentyFourPartOne, dayTwentyFourPartTwo };
 
 /*
@@ -265,210 +267,29 @@ const monad: string[] = [
     "add z y"
 ];
 
-class ArthimeticLogicUnit {
-    constructor() {
-        this.variables = new Array(4).fill(0);
-    }
-
-    private getInput(queue: number[]): number {
-        const input = queue.shift();
-        if (input === undefined) {
-            throw new Error("input defined");
-        }
-        return input;
-    }
-
-    private getValue(indexFlag: number, indexOrValue: number): number {
-        return indexFlag === 1 ? this.variables[indexOrValue] : indexOrValue;
-    }
-
-    execute(instructions: number[][], originalQueue: number[]): void {
-        const queue = originalQueue.slice();
-        this.reset();
-        for (const instruction of instructions) {
-            // console.log(instruction);
-            const a: number = instruction[1];
-            switch (instruction[0]) {
-                case 0: // inp
-                    this.variables[a] = this.getInput(queue);
-                    break;
-                case 1: // add
-                    this.variables[a] = this.variables[a] + this.getValue(instruction[2], instruction[3]);
-                    break;
-                case 2: // mul
-                    this.variables[a] = this.variables[a] * this.getValue(instruction[2], instruction[3]);
-                    break;
-                case 3: // div
-                    this.variables[a] = Math.floor(this.variables[a] / this.getValue(instruction[2], instruction[3]));
-                    break;
-                case 4: // mod
-                    this.variables[a] = this.variables[a] % this.getValue(instruction[2], instruction[3]);
-                    break;
-                case 5: // eql
-                    this.variables[a] = this.variables[a] === this.getValue(instruction[2], instruction[3]) ? 1 : 0;
-                    break;
-                default:
-                    throw new Error("instruction unknown");
-            }
-        }
-    }
-
-    toLog(): void {
-        console.log(`x: ${this.variables[0]} y: ${this.variables[1]} z: ${this.variables[2]} w: ${this.variables[3]}`);
-    }
-
-    reset(): void {
-        for (let i = 0; i < this.variables.length; i++) {
-            this.variables[i] = 0;
-        }
-    }
-
-    getVariables(): number[] {
-        return this.variables.slice();
-    }
-
-    z(): number {
-        return this.variables[2];
-    }
-
-    private readonly variables: number[];
-}
-
-function getVariableIndex(variable: string): number {
-    switch (variable) {
-        case "x":
-            return 0;
-        case "y":
-            return 1;
-        case "z":
-            return 2;
-        case "w":
-            return 3;
-        default:
-            throw new Error("variable unknown");
-    }
-}
-
-function isVariable(token: string): number {
-    switch (token) {
-        case "x":
-        case "y":
-        case "z":
-        case "w":
-            return 1;
-        default:
-            return 0;
-    }
-}
-
-function getVariableOrValue(token: string): number {
-    return isVariable(token) ? getVariableIndex(token) : parseInt(token);
-}
-
-function preprocess(lines: string[]): number[][] {
-    return lines.map((line: string) => {
-        const tokens = line.split(" ");
-        switch (tokens[0]) {
-            case "inp":
-                return [0, getVariableIndex(tokens[1])];
-            case "add":
-                return [1, getVariableIndex(tokens[1]), isVariable(tokens[2]), getVariableOrValue(tokens[2])];
-            case "mul":
-                return [2, getVariableIndex(tokens[1]), isVariable(tokens[2]), getVariableOrValue(tokens[2])];
-            case "div":
-                return [3, getVariableIndex(tokens[1]), isVariable(tokens[2]), getVariableOrValue(tokens[2])];
-            case "mod":
-                return [4, getVariableIndex(tokens[1]), isVariable(tokens[2]), getVariableOrValue(tokens[2])];
-            case "eql":
-                return [5, getVariableIndex(tokens[1]), isVariable(tokens[2]), getVariableOrValue(tokens[2])];
-            default:
-                throw new Error("instruction unknown");
-        }
-    });
-}
-
 function dayTwentyFourPartOne(): void {
-    const alu = new ArthimeticLogicUnit();
-    alu.toLog();
+    const alu = new Alu();
+    alu.toLog(console);
 
-    const instructions = preprocess(monad);
+    const instructions = alu.compile(monad);
 
     const digits = 14;
 
-    /*
-    let isLoop = true;
-    const queue = new Array(digits).fill(9);
-    let minimum = Infinity;
-    let digit = digits - 1;
-    let count = 0;
-    while (isLoop) {
-        // console.log(`Q: ${queue}`);
+    for (let i = 99999999999999; i > 0; i--) {
+        const queue = i
+            .toString()
+            .split("")
+            .map((c: string) => {
+                return parseInt(c);
+            });
+        if (queue.indexOf(0) !== -1) {
+            continue;
+        }
+        console.log(i);
         alu.execute(instructions, queue);
-
         if (alu.z() === 0) {
-            isLoop = false;
-            alu.toLog();
-            console.log(queue);
-            const modelNumber = queue
-                .map((value: number) => {
-                    return digit.toString();
-                })
-                .join("");
-            console.log(queue);
+            console.log(i);
             break;
-        }
-
-        if (alu.z() < minimum) {
-            minimum = alu.z();
-            console.log(queue);
-            console.log(minimum);
-            digit--;
-            if (digit === -1) {
-                digit = digits - 1;
-            }
-            count = 0;
-        }
-        // console.log(alu.z());
-        queue[digit] = queue[digit] - 1;
-        if (queue[digit] === 0) {
-            queue[digit] = 9;
-        }
-        count++;
-        if (count === 9) {
-            count = 0;
-            digit--;
-            if (digit === -1) {
-                digit = digits - 1;
-            }
-        }
-    }
-    */
-
-    const spinResult = [1, 1, 9, 8, 9, 9, 2, 9, 9, 9, 8, 5, 9, 8];
-    const spinResultMinimum = 397;
-    /*
-    const mask = spinResult.map((value: number) => {
-        return value === 9 ? 1 : 0;
-    });
-    */
-    const masks: number[][] = [
-        [0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0],
-        [0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0],
-        [0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0]
-    ];
-    for (const mask of masks) {
-        console.log(mask);
-        const queue = spinResult.slice();
-        for (let i = 0; i < 8; ++i) {
-            for (let j = 0; j < spinResult.length; j++) {
-                queue[j] = queue[j] - mask[j];
-            }
-            alu.execute(instructions, queue);
-            console.log(alu.z());
         }
     }
 }
