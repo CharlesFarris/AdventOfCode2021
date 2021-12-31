@@ -1098,6 +1098,13 @@ function dayThirteenPartOne(): void {
         console.log(`Count: ${count}`);
     }
     paper.toLog();
+
+    // #  # #    ###  #  # ###   ##  #### ###
+    // #  # #    #  # #  # #  # #  # #    #  #
+    // #### #    ###  #  # ###  #    ###  #  #
+    // #  # #    #  # #  # #  # # ## #    ###
+    // #  # #    #  # #  # #  # #  # #    # #
+    // #  # #### ###   ##  ###   ### #    #  #
 }
 
 function dayThirteenPartTwo(): void {

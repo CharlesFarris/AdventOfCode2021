@@ -17,11 +17,13 @@ import { daySixteenPartOne, daySixteenPartTwo } from "./day16";
 import { daySeventeenPartOne, daySeventeenPartTwo } from "./day17";
 import { dayEighteenPartOne, dayEighteenPartTwo } from "./day18";
 import { dayTwentyPartOne, dayTwentyPartTwo } from "./day20";
+import { dayTwentyTwoPartOne, dayTwentyTwoPartTwo } from "./day22";
+import { dayTwentyThreePartOne, dayTwentyThreePartTwo } from "./day23";
 import { dayTwentyFivePartOne, dayTwentyFivePartTwo } from "./day25";
 import { dayTwentyThreePartOne, dayTwentyThreePartTwo } from "./day23";
 */
 
-import { dayTwentyTwoPartOne, dayTwentyTwoPartTwo } from "./day22";
+import { dayFourteenPartOne, dayFourteenPartTwo } from "./day14";
 
 /*
 // Day 1
@@ -96,15 +98,19 @@ dayEighteenPartTwo();
 dayTwentyPartOne();
 dayTwentyPartTwo();
 
-// Day 25
-dayTwentyFivePartOne();
-dayTwentyFivePartTwo();
+// Day 22
+// dayTwentyTwoPartOne();
+dayTwentyTwoPartTwo();
 
 // Day 23
 dayTwentyThreePartOne();
 dayTwentyThreePartTwo();
+
+// Day 25
+dayTwentyFivePartOne();
+dayTwentyFivePartTwo();
 */
 
-// Day 22
-// dayTwentyTwoPartOne();
-dayTwentyTwoPartTwo();
+// Day 14
+dayFourteenPartOne();
+dayFourteenPartTwo();

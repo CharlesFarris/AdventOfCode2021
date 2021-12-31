@@ -84,7 +84,7 @@ test("intersect", () => {
     const right4 = Cuboid.fromPoints(0, 0, 0, 5, 5, 5);
     const intersect4 = left.intersect(right4);
     expect(intersect4).toBeDefined();
-    expect(intersect4?.isMatch(Cuboid.fromPoints(0,0,0,5,5,5))).toBeTruthy();
+    expect(intersect4?.isMatch(Cuboid.fromPoints(0, 0, 0, 5, 5, 5))).toBeTruthy();
 });
 
 test("isMatch", () => {
