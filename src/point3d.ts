@@ -20,4 +20,8 @@ class Point3d {
     static fromArray(array: number[]): Point3d {
         return new Point3d(array[0], array[1], array[2]);
     }
+
+    isMatch(point: Point3d): boolean {
+        return this.x === point.x && this.y === point.y && this.z === point.z;
+    }
 }

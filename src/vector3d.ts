@@ -35,6 +35,10 @@ class Vector3d {
         this.z -= v.z;
     }
 
+    isMatch(v: Vector3d): boolean {
+        return this.x === v.x && this.y === v.y && this.z === v.z;
+    }
+
     x: number;
     y: number;
     z: number;
